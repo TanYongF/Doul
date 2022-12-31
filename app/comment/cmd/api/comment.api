@@ -1,0 +1,22 @@
+syntax = "v1"
+
+info(
+	title: "users' comment"
+	desc: "comment"
+	author: "tyf"
+	email: "tan13621251388@gmail.com"
+	version: "type version here"
+)
+
+type request {
+	// TODO: add members here and delete this comment
+}
+
+type response {
+	// TODO: add members here and delete this comment
+}
+
+service comment{
+	@handler handlerName // TODO: replace handler name and delete this comment
+	get /users/id/:userId (request) returns (response)
+}

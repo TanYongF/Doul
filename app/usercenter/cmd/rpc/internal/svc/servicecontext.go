@@ -1,0 +1,25 @@
+package svc
+
+import (
+	"github.com/zeromicro/go-zero/core/stores/redis"
+	"github.com/zeromicro/go-zero/core/stores/sqlx"
+	"go_code/Doul/app/usercenter/cmd/rpc/internal/config"
+	"go_code/Doul/app/usercenter/model"
+)
+
+type ServiceContext struct {
+	Config      config.Config
+	UserModel   model.DyUserModel
+	RedisClient *redis.Redis
+}
+
+func NewServiceContext(c config.Config) *ServiceContext {
+	conn := sqlx.NewMysql(c.Mysql.DataSource)
+	return &ServiceContext{
+		Config:    c,
+		UserModel: model.NewDyUserModel(conn, c.CacheRedis),
+		RedisClient: redis.New(c.Redis.Host, func(r *redis.Redis) {
+			r.Pass = c.Redis.Pass
+		}),
+	}
+}

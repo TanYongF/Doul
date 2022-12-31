@@ -1,0 +1,17 @@
+syntax = "proto3";
+
+package comment;
+
+option go_package="./comment";
+
+message CommentReq {
+  string name = 1;
+}
+
+message CommentResp {
+  string greet = 1;
+}
+
+service Comment {
+  rpc greet(CommentReq) returns (CommentResp);
+}
