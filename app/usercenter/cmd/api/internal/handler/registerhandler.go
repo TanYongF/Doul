@@ -1,6 +1,7 @@
 package handler
 
 import (
+	"go_code/Doul/common/response"
 	"net/http"
 
 	"github.com/zeromicro/go-zero/rest/httpx"
@@ -19,10 +20,6 @@ func registerHandler(svcCtx *svc.ServiceContext) http.HandlerFunc {
 
 		l := logic.NewRegisterLogic(r.Context(), svcCtx)
 		resp, err := l.Register(&req)
-		if err != nil {
-			httpx.ErrorCtx(r.Context(), w, err)
-		} else {
-			httpx.OkJsonCtx(r.Context(), w, resp)
-		}
+		response.HttpResult(r, w, resp, err)
 	}
 }

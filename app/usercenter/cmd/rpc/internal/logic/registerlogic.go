@@ -34,7 +34,7 @@ func (l *RegisterLogic) Register(in *user.RegisterReq) (*user.RegisterReply, err
 	}
 	//如果username已被使用
 	if dyuser != nil {
-		return nil, errors.Wrapf(xerr.NewErrCode(xerr.USERNAME_HAS_REGISTER), "用户名已经被注册")
+		return nil, errors.Wrapf(xerr.NewErrCode(xerr.USERNAME_HAS_REGISTER), "用户名 %s 已经被注册", in.Username)
 	}
 
 	_, err = l.svcCtx.UserModel.Insert(l.ctx, &model.DyUser{
@@ -50,6 +50,6 @@ func (l *RegisterLogic) Register(in *user.RegisterReq) (*user.RegisterReply, err
 	}
 	return &user.RegisterReply{
 		UserId: dyuser.UserId,
-		Token:  "fafafaf8989",
+		Token:  in.Username + in.Password,
 	}, nil
 }

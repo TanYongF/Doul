@@ -2,8 +2,6 @@ package xerr
 
 import "fmt"
 
-const defaultCode = 1001
-
 /**
 常用通用固定错误
 */
@@ -33,6 +31,7 @@ func NewErrCodeMsg(errCode uint32, errMsg string) *CodeError {
 func NewErrCode(errCode uint32) *CodeError {
 	return &CodeError{errCode: errCode, errMsg: MapErrMsg(errCode)}
 }
+
 func NewErrMsg(errMsg string) *CodeError {
 	return &CodeError{errCode: SERVER_COMMON_ERROR, errMsg: errMsg}
 }

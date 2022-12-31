@@ -21,6 +21,10 @@ type LoginLogic struct {
 	logx.Logger
 }
 
+var ErrGenerateTokenError = xerr.NewErrMsg("生成token失败")
+var ErrUsernamePwdError = xerr.NewErrMsg("账号或密码不正确")
+var ErrUserNoExistsError = xerr.NewErrMsg("无此用户")
+
 func NewLoginLogic(ctx context.Context, svcCtx *svc.ServiceContext) *LoginLogic {
 	return &LoginLogic{
 		ctx:    ctx,
@@ -30,22 +34,23 @@ func NewLoginLogic(ctx context.Context, svcCtx *svc.ServiceContext) *LoginLogic 
 }
 
 func (l *LoginLogic) Login(in *user.LoginReq) (*user.LoginReply, error) {
+
 	//查找用户是否存在
 	dyuser, err := l.svcCtx.UserModel.FindOneByUsername(l.ctx, in.GetUsername())
 	if err != nil {
-		return nil, errors.Wrapf(xerr.NewErrCode(xerr.DB_ERROR), "FindOneBySn db err : %v , in:%+v", err, in)
+		return nil, errors.Wrapf(xerr.NewErrCode(xerr.DB_ERROR), "根据用户名称查询用户信息失败，mobile:%s,err:%v", in.Username, err)
 	}
 	if dyuser == nil {
-		return nil, errors.Wrapf(xerr.NewErrCode(xerr.NO_SUCH_USER), "such user not exsist")
+		return nil, errors.Wrapf(ErrUserNoExistsError, "username: %s", in.Username)
 	}
+
 	//验证密码
 	md5Pass := tool.Md5(in.GetPassword())
 	if strings.Compare(dyuser.Password, md5Pass) != 0 {
-		l.Logger.Error("验证错误")
-		return nil, errors.Wrap(xerr.NewErrCode(xerr.WRONG_PASSWORD), "password wrong in")
+		return nil, errors.Wrap(ErrUsernamePwdError, "密码匹配出错")
 	}
 
-	//生成Token
+	//Generate token
 	token := in.Username + in.Password
 	//将token加入redis中，过期时间是24小时, 键是token, 值是用户对象
 	userJson, _ := json.Marshal(*dyuser)
@@ -54,6 +59,8 @@ func (l *LoginLogic) Login(in *user.LoginReq) (*user.LoginReply, error) {
 	if err != nil {
 		return nil, errors.Wrapf(xerr.NewErrCode(xerr.CACHE_ERROR), "cache wrong")
 	}
+
+	logx.Infof("用户%s 登陆成功， 生成的token： %s", in.GetUsername(), token)
 
 	return &user.LoginReply{
 		UserId: dyuser.UserId,
