@@ -3,6 +3,7 @@ package tool
 import (
 	"crypto/md5"
 	"fmt"
+	"github.com/rs/xid"
 )
 
 var (
@@ -16,4 +17,9 @@ func Md5(pwd string) string {
 	hash := md5.Sum(data)             //MD5 encryption
 	md5str := fmt.Sprintf("%x", hash) //convert []byte to hexadecimal.
 	return md5str
+}
+
+// TokenGenerator 生成用户token
+func TokenGenerator() string {
+	return xid.New().String()
 }

@@ -3,7 +3,14 @@ module go_code/Doul
 go 1.17
 
 require (
+	github.com/chilts/sid v0.0.0-20190607042430-660e94789ec9
+	github.com/kjk/betterguid v0.0.0-20170621091430-c442874ba63a
+	github.com/oklog/ulid v1.3.1
 	github.com/pkg/errors v0.9.1
+	github.com/rs/xid v1.4.0
+	github.com/satori/go.uuid v1.2.0
+	github.com/segmentio/ksuid v1.0.4
+	github.com/sony/sonyflake v1.1.0
 	github.com/zeromicro/go-zero v1.4.3
 	google.golang.org/grpc v1.51.0
 	google.golang.org/protobuf v1.28.1

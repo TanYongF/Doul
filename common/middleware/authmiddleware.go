@@ -2,6 +2,8 @@ package middleware
 
 import (
 	"context"
+	"github.com/zeromicro/go-zero/core/logx"
+	"github.com/zeromicro/go-zero/core/stringx"
 	"go_code/Doul/app/usercenter/cmd/rpc/userclient"
 	"go_code/Doul/common/response"
 	"go_code/Doul/common/xerr"
@@ -18,16 +20,35 @@ func NewAuthMiddleware(userClient userclient.User) *AuthMiddleware {
 	}
 }
 
+//
+// Handle
+//  @Description: 鉴权中间件方法
+//  @receiver m 鉴权中间件
+//  @param next
+//  @return http.HandlerFunc
+//
 func (m *AuthMiddleware) Handle(next http.HandlerFunc) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
+		token := r.FormValue("token")
+
+		//check is the token empty
+		if stringx.HasEmpty(token) {
+			response.HttpResult(r, w, false, xerr.NewErrCode(xerr.NO_AUTH))
+			return
+		}
+
+		//invoke the rpc service to check users' auth
 		auth, err := m.UserRpc.CheckAuth(context.Background(), &userclient.CheckAuthReq{
-			Token: r.FormValue("token"),
+			Token: token,
 		})
+
+		//if has err or no authed, return
 		if err != nil {
 			response.HttpResult(r, w, nil, err)
 			return
 		} else if !auth.Authed {
 			response.HttpResult(r, w, false, xerr.NewErrCode(xerr.NO_AUTH))
+			logx.Infof("user %s has not authed", r.FormValue("token"))
 			return
 		}
 		next(w, r)

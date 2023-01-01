@@ -16,6 +16,7 @@ type response {
 	// TODO: add members here and delete this comment
 }
 
+
 service comment{
 	@handler handlerName // TODO: replace handler name and delete this comment
 	get /users/id/:userId (request) returns (response)

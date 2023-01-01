@@ -4,8 +4,8 @@ import (
 	"github.com/zeromicro/go-zero/rest"
 	"github.com/zeromicro/go-zero/zrpc"
 	"go_code/Doul/app/usercenter/cmd/api/internal/config"
-	"go_code/Doul/app/usercenter/cmd/api/internal/middleware"
 	"go_code/Doul/app/usercenter/cmd/rpc/userclient"
+	"go_code/Doul/common/middleware"
 )
 
 type ServiceContext struct {

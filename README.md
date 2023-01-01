@@ -8,6 +8,7 @@
 ### 技术选型
 1. [go-zero](https://go-zero.dev/cn/)：一款开箱即用的RPC框架（基于zrpc）
 2. etcd: 服务发现
+3. [xid](https://github.com/rs/xid) : UUID生成器
 
 ### 关于日志处理方面
 
@@ -17,8 +18,7 @@
 
 > 查看文档得知： DEADLINE_EXCEEDED  4 means that **The deadline expired before the operation could complete. For operations that change the state of the system, this error may be returned even if the operation has completed successfully. For example, a successful response from a server could have been delayed long**
 
-![image-20230101001757364](C:\Users\tan13\AppData\Roaming\Typora\typora-user-images\image-20230101001757364.png)
-
+![image-20230101001757364](https://kauizhaotan.oss-accelerate.aliyuncs.com/img/image-20230101001757364.png)
 
 
 我们通过自定义错误类型`Code Error` ,来生成`Customized error`返回类型, 以便更好的日志处理

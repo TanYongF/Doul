@@ -1,0 +1,20 @@
+syntax = "proto3";
+
+package video;
+
+message StreamReq {
+  string name = 1;
+}
+
+message StreamResp {
+  string greet = 1;
+}
+
+
+message {
+
+}
+
+service StreamGreeter {
+  rpc greet(StreamReq) returns (StreamResp);
+}

@@ -4,15 +4,14 @@ import (
 	"context"
 	"encoding/json"
 	"github.com/pkg/errors"
+	"github.com/zeromicro/go-zero/core/logx"
 	"go_code/Doul/app/usercenter/cmd/rpc/internal/svc"
 	"go_code/Doul/app/usercenter/cmd/rpc/user"
+	"go_code/Doul/app/usercenter/model"
 	"go_code/Doul/common/globalkey"
 	"go_code/Doul/common/tool"
 	"go_code/Doul/common/xerr"
 	"strings"
-	"time"
-
-	"github.com/zeromicro/go-zero/core/logx"
 )
 
 type LoginLogic struct {
@@ -34,36 +33,46 @@ func NewLoginLogic(ctx context.Context, svcCtx *svc.ServiceContext) *LoginLogic 
 }
 
 func (l *LoginLogic) Login(in *user.LoginReq) (*user.LoginReply, error) {
-
-	//查找用户是否存在
-	dyuser, err := l.svcCtx.UserModel.FindOneByUsername(l.ctx, in.GetUsername())
+	dyuser, err := l.checkUser(in.Username, in.Password)
 	if err != nil {
-		return nil, errors.Wrapf(xerr.NewErrCode(xerr.DB_ERROR), "根据用户名称查询用户信息失败，mobile:%s,err:%v", in.Username, err)
+		return nil, err
 	}
-	if dyuser == nil {
-		return nil, errors.Wrapf(ErrUserNoExistsError, "username: %s", in.Username)
-	}
-
-	//验证密码
-	md5Pass := tool.Md5(in.GetPassword())
-	if strings.Compare(dyuser.Password, md5Pass) != 0 {
-		return nil, errors.Wrap(ErrUsernamePwdError, "密码匹配出错")
-	}
-
-	//Generate token
-	token := in.Username + in.Password
-	//将token加入redis中，过期时间是24小时, 键是token, 值是用户对象
+	//Generate token and user detail json
+	token := tool.TokenGenerator()
 	userJson, _ := json.Marshal(*dyuser)
-	expireDuration := time.Hour * 24
-	err = l.svcCtx.RedisClient.SetexCtx(l.ctx, globalkey.TokenPrefix+token, string(userJson), int(expireDuration))
+
+	//将token加入redis中，过期时间是24小时, 键是token, 值是用户对象
+	err = l.svcCtx.RedisClient.SetexCtx(l.ctx, globalkey.TokenPrefix+token, string(userJson), int(globalkey.TokenExpireTime.Seconds()))
 	if err != nil {
-		return nil, errors.Wrapf(xerr.NewErrCode(xerr.CACHE_ERROR), "cache wrong")
+		return nil, errors.Wrapf(xerr.NewErrCode(xerr.CACHE_ERROR), "cache wrong when insert token")
 	}
 
-	logx.Infof("用户%s 登陆成功， 生成的token： %s", in.GetUsername(), token)
+	logx.Infof("用户%s 登陆成功，生成的token： %s", in.GetUsername(), token)
 
 	return &user.LoginReply{
 		UserId: dyuser.UserId,
 		Token:  token,
 	}, nil
+}
+
+//
+func (l *LoginLogic) checkUser(username string, password string) (dbUser *model.DyUser, err error) {
+	//查找用户是否存在
+	dbUser, err = l.svcCtx.UserModel.FindOneByUsername(l.ctx, username)
+	//if has error
+	if err != nil {
+		return nil, errors.Wrapf(xerr.NewErrCode(xerr.DB_ERROR), "根据用户名称查询用户信息失败，mobile:%s,err:%v", username, err)
+	}
+	//the user not exists
+	if dbUser == nil {
+		return nil, errors.Wrapf(ErrUserNoExistsError, "username: %s", username)
+	}
+	//验证密码
+	formPass := tool.Md5(password)
+	logx.Infof("dbUser.Password : %s, formPass: %s", dbUser.Password, formPass)
+	if strings.Compare(dbUser.Password, formPass) != 0 {
+		return nil, errors.Wrap(ErrUsernamePwdError, "密码匹配出错")
+	}
+
+	return dbUser, nil
 }
