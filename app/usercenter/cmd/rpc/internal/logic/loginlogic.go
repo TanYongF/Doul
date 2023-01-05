@@ -55,7 +55,6 @@ func (l *LoginLogic) Login(in *user.LoginReq) (*user.LoginReply, error) {
 	}, nil
 }
 
-//
 func (l *LoginLogic) checkUser(username string, password string) (dbUser *model.DyUser, err error) {
 	//查找用户是否存在
 	dbUser, err = l.svcCtx.UserModel.FindOneByUsername(l.ctx, username)

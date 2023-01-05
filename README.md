@@ -10,6 +10,45 @@
 2. etcd: 服务发现
 3. [xid](https://github.com/rs/xid) : UUID生成器
 
+### 关于API
+
+每个微服务都有自己的的API网关
+
+ - UserCenter (用户中心)
+ - Comment (评论中心)
+ - Friend (关系接口)
+ - Video (视频接口)
+
+由于有多个`API`网关，所以应该是使用更上一层的网关来聚合每个单独API
+
+使用`Nginx`作为上层网关，具体配置如下：
+```
+#doul项目
+server{
+    listen 8094;
+    #access_log /var/log/nginx/looklook.com_access.log;
+    #error_log /var/log/nginx/looklook.com_error.log;
+
+
+    location ~ /douyin/user/ {
+      proxy_set_header Host $http_host;
+      proxy_set_header X-Real-IP $remote_addr;
+      proxy_set_header REMOTE-HOST $remote_addr;
+      proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+      proxy_pass http://127.0.0.1:8889;
+    }
+
+    location ~ /douyin/comment/ {
+       proxy_set_header Host $http_host;
+       proxy_set_header X-Real-IP $remote_addr;
+       proxy_set_header REMOTE-HOST $remote_addr;
+       proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+       proxy_pass http://127.0.0.1:8888;
+    }
+}
+
+```
+
 ### 关于日志处理方面
 
 在gRPC中，当调用rpc服务发生错误时， 其返回的类型是 `status.error` , 它是通过`status code`来判断错误类型 具体可查看可查看[Status Code](https://grpc.github.io/grpc/core/md_doc_statuscodes.html)
@@ -24,6 +63,7 @@
 我们通过自定义错误类型`Code Error` ,来生成`Customized error`返回类型, 以便更好的日志处理
 
 ```go
+
 type CodeError struct {
 	errCode uint32
 	errMsg  string
@@ -44,3 +84,34 @@ type CodeError struct {
 
 - [Go error 最佳实践](https://medium.com/@dche423/golang-error-handling-best-practice-cn-42982bd72672)
 - https://chanjarster.github.io/post/go/err-throw-rules/
+
+
+
+
+
+
+## Docker下的Etcd安装（单机安装）
+
+```shell
+docker pull bitnami/etcd:latest #拉取镜像
+
+docker network create app-tier --driver bridge #构建Docker网络
+
+#运行etcd服务端
+docker run -d --name etcd-server \
+    --network app-tier \
+    --publish 2379:2379 \
+    --publish 2380:2380 \
+    --env ALLOW_NONE_AUTHENTICATION=yes \
+    --env ETCD_ADVERTISE_CLIENT_URLS=http://etcd-server:2379 \
+    bitnami/etcd:latest
+    
+    
+##客户端--可选
+docker run -it --rm \
+    --network app-tier \
+    --env ALLOW_NONE_AUTHENTICATION=yes \
+    bitnami/etcd:latest etcdctl --endpoints http://etcd-server:2379 put /message Hello
+
+```
+

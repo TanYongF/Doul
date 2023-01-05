@@ -8,16 +8,58 @@ info(
 	version: "type version here"
 )
 
-type request {
-	// TODO: add members here and delete this comment
+type CommonResp {
+	Code uint32 `json:"status_code"`
+	Msg  string `json:"status_msg"`
 }
 
-type response {
-	// TODO: add members here and delete this comment
+// Comment
+type Comment {
+	Content    string `json:"content"`     // 评论内容
+	CreateDate string `json:"create_date"` // 评论发布日期，格式 mm-dd
+	ID         int64  `json:"id"`          // 评论id
+	User       User   `json:"user"`        // 评论用户信息
 }
 
+// User
+type User {
+	FollowCount   int64  `json:"follow_count"`   // 关注总数
+	FollowerCount int64  `json:"follower_count"` // 粉丝总数
+	ID            int64  `json:"id"`             // 用户id
+	IsFollow      bool   `json:"is_follow"`      // true-已关注，false-未关注
+	Name          string `json:"name"`           // 用户名称
+}
 
+type CommentListResp {
+	CommentList []Comment `json:"comment_list"` // 评论列表
+	CommonResp
+}
+type CommentActionResp {
+	CommonResp
+	Comment Comment `json:"comment,omitempty"`
+}
+
+type CommentListReq {
+	Token   string `form:"token"`
+	VideoId int64  `form:"video_id"`
+}
+
+// ParamCommentAction 用户获取评论请求列表
+type CommentActionReq {
+	Token       string `form:"token"`
+	VideoId     int64  `form:"video_id"`
+	ActionType  int8   `form:"action_type"`
+	CommentText string `form:"comment_text"`
+	CommentId   int64  `form:"comment_id"`
+}
+
+@server (
+	middleware : AuthMiddleware
+)
 service comment{
-	@handler handlerName // TODO: replace handler name and delete this comment
-	get /users/id/:userId (request) returns (response)
+	@handler CommentList
+	get /douyin/comment/list (CommentListReq) returns (CommentListResp)
+	
+	@handler CommentAction
+	post /douyin/comment/action (CommentActionReq) returns (CommentActionResp)
 }

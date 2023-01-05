@@ -20,16 +20,19 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-type CommentReq struct {
+type PutCommentResp struct {
 	state         protoimpl.MessageState
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
 
-	Name string `protobuf:"bytes,1,opt,name=name,proto3" json:"name,omitempty"`
+	VideoId     string `protobuf:"bytes,1,opt,name=video_id,json=videoId,proto3" json:"video_id,omitempty"`
+	ActionType  string `protobuf:"bytes,2,opt,name=action_type,json=actionType,proto3" json:"action_type,omitempty"`
+	CommentText string `protobuf:"bytes,3,opt,name=comment_text,json=commentText,proto3" json:"comment_text,omitempty"`
+	CommentId   string `protobuf:"bytes,4,opt,name=comment_id,json=commentId,proto3" json:"comment_id,omitempty"`
 }
 
-func (x *CommentReq) Reset() {
-	*x = CommentReq{}
+func (x *PutCommentResp) Reset() {
+	*x = PutCommentResp{}
 	if protoimpl.UnsafeEnabled {
 		mi := &file_comment_proto_msgTypes[0]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -37,13 +40,13 @@ func (x *CommentReq) Reset() {
 	}
 }
 
-func (x *CommentReq) String() string {
+func (x *PutCommentResp) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*CommentReq) ProtoMessage() {}
+func (*PutCommentResp) ProtoMessage() {}
 
-func (x *CommentReq) ProtoReflect() protoreflect.Message {
+func (x *PutCommentResp) ProtoReflect() protoreflect.Message {
 	mi := &file_comment_proto_msgTypes[0]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -55,28 +58,49 @@ func (x *CommentReq) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use CommentReq.ProtoReflect.Descriptor instead.
-func (*CommentReq) Descriptor() ([]byte, []int) {
+// Deprecated: Use PutCommentResp.ProtoReflect.Descriptor instead.
+func (*PutCommentResp) Descriptor() ([]byte, []int) {
 	return file_comment_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *CommentReq) GetName() string {
+func (x *PutCommentResp) GetVideoId() string {
 	if x != nil {
-		return x.Name
+		return x.VideoId
 	}
 	return ""
 }
 
-type CommentResp struct {
+func (x *PutCommentResp) GetActionType() string {
+	if x != nil {
+		return x.ActionType
+	}
+	return ""
+}
+
+func (x *PutCommentResp) GetCommentText() string {
+	if x != nil {
+		return x.CommentText
+	}
+	return ""
+}
+
+func (x *PutCommentResp) GetCommentId() string {
+	if x != nil {
+		return x.CommentId
+	}
+	return ""
+}
+
+type PutCommentReq struct {
 	state         protoimpl.MessageState
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
 
-	Greet string `protobuf:"bytes,1,opt,name=greet,proto3" json:"greet,omitempty"`
+	Comments *CommentBody `protobuf:"bytes,1,opt,name=comments,proto3" json:"comments,omitempty"`
 }
 
-func (x *CommentResp) Reset() {
-	*x = CommentResp{}
+func (x *PutCommentReq) Reset() {
+	*x = PutCommentReq{}
 	if protoimpl.UnsafeEnabled {
 		mi := &file_comment_proto_msgTypes[1]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -84,13 +108,13 @@ func (x *CommentResp) Reset() {
 	}
 }
 
-func (x *CommentResp) String() string {
+func (x *PutCommentReq) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*CommentResp) ProtoMessage() {}
+func (*PutCommentReq) ProtoMessage() {}
 
-func (x *CommentResp) ProtoReflect() protoreflect.Message {
+func (x *PutCommentReq) ProtoReflect() protoreflect.Message {
 	mi := &file_comment_proto_msgTypes[1]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -102,33 +126,315 @@ func (x *CommentResp) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use CommentResp.ProtoReflect.Descriptor instead.
-func (*CommentResp) Descriptor() ([]byte, []int) {
+// Deprecated: Use PutCommentReq.ProtoReflect.Descriptor instead.
+func (*PutCommentReq) Descriptor() ([]byte, []int) {
 	return file_comment_proto_rawDescGZIP(), []int{1}
 }
 
-func (x *CommentResp) GetGreet() string {
+func (x *PutCommentReq) GetComments() *CommentBody {
 	if x != nil {
-		return x.Greet
+		return x.Comments
+	}
+	return nil
+}
+
+type CommentListReq struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	VideoId string `protobuf:"bytes,1,opt,name=video_id,json=videoId,proto3" json:"video_id,omitempty"`
+}
+
+func (x *CommentListReq) Reset() {
+	*x = CommentListReq{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_comment_proto_msgTypes[2]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *CommentListReq) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*CommentListReq) ProtoMessage() {}
+
+func (x *CommentListReq) ProtoReflect() protoreflect.Message {
+	mi := &file_comment_proto_msgTypes[2]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use CommentListReq.ProtoReflect.Descriptor instead.
+func (*CommentListReq) Descriptor() ([]byte, []int) {
+	return file_comment_proto_rawDescGZIP(), []int{2}
+}
+
+func (x *CommentListReq) GetVideoId() string {
+	if x != nil {
+		return x.VideoId
 	}
 	return ""
+}
+
+type User struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	Id            int64  `protobuf:"varint,1,opt,name=id,proto3" json:"id,omitempty"`
+	Name          string `protobuf:"bytes,2,opt,name=name,proto3" json:"name,omitempty"`
+	FollowCount   int64  `protobuf:"varint,3,opt,name=follow_count,json=followCount,proto3" json:"follow_count,omitempty"`
+	FollowerCount int64  `protobuf:"varint,4,opt,name=follower_count,json=followerCount,proto3" json:"follower_count,omitempty"`
+	IsFollow      int64  `protobuf:"varint,6,opt,name=is_follow,json=isFollow,proto3" json:"is_follow,omitempty"`
+}
+
+func (x *User) Reset() {
+	*x = User{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_comment_proto_msgTypes[3]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *User) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*User) ProtoMessage() {}
+
+func (x *User) ProtoReflect() protoreflect.Message {
+	mi := &file_comment_proto_msgTypes[3]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use User.ProtoReflect.Descriptor instead.
+func (*User) Descriptor() ([]byte, []int) {
+	return file_comment_proto_rawDescGZIP(), []int{3}
+}
+
+func (x *User) GetId() int64 {
+	if x != nil {
+		return x.Id
+	}
+	return 0
+}
+
+func (x *User) GetName() string {
+	if x != nil {
+		return x.Name
+	}
+	return ""
+}
+
+func (x *User) GetFollowCount() int64 {
+	if x != nil {
+		return x.FollowCount
+	}
+	return 0
+}
+
+func (x *User) GetFollowerCount() int64 {
+	if x != nil {
+		return x.FollowerCount
+	}
+	return 0
+}
+
+func (x *User) GetIsFollow() int64 {
+	if x != nil {
+		return x.IsFollow
+	}
+	return 0
+}
+
+type CommentBody struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	Id         int64  `protobuf:"varint,1,opt,name=id,proto3" json:"id,omitempty"`
+	User       *User  `protobuf:"bytes,2,opt,name=user,proto3" json:"user,omitempty"`
+	Content    string `protobuf:"bytes,3,opt,name=content,proto3" json:"content,omitempty"`
+	CreateDate string `protobuf:"bytes,4,opt,name=create_date,json=createDate,proto3" json:"create_date,omitempty"`
+}
+
+func (x *CommentBody) Reset() {
+	*x = CommentBody{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_comment_proto_msgTypes[4]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *CommentBody) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*CommentBody) ProtoMessage() {}
+
+func (x *CommentBody) ProtoReflect() protoreflect.Message {
+	mi := &file_comment_proto_msgTypes[4]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use CommentBody.ProtoReflect.Descriptor instead.
+func (*CommentBody) Descriptor() ([]byte, []int) {
+	return file_comment_proto_rawDescGZIP(), []int{4}
+}
+
+func (x *CommentBody) GetId() int64 {
+	if x != nil {
+		return x.Id
+	}
+	return 0
+}
+
+func (x *CommentBody) GetUser() *User {
+	if x != nil {
+		return x.User
+	}
+	return nil
+}
+
+func (x *CommentBody) GetContent() string {
+	if x != nil {
+		return x.Content
+	}
+	return ""
+}
+
+func (x *CommentBody) GetCreateDate() string {
+	if x != nil {
+		return x.CreateDate
+	}
+	return ""
+}
+
+type CommentListResp struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	Comments []*CommentBody `protobuf:"bytes,1,rep,name=comments,proto3" json:"comments,omitempty"`
+}
+
+func (x *CommentListResp) Reset() {
+	*x = CommentListResp{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_comment_proto_msgTypes[5]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *CommentListResp) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*CommentListResp) ProtoMessage() {}
+
+func (x *CommentListResp) ProtoReflect() protoreflect.Message {
+	mi := &file_comment_proto_msgTypes[5]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use CommentListResp.ProtoReflect.Descriptor instead.
+func (*CommentListResp) Descriptor() ([]byte, []int) {
+	return file_comment_proto_rawDescGZIP(), []int{5}
+}
+
+func (x *CommentListResp) GetComments() []*CommentBody {
+	if x != nil {
+		return x.Comments
+	}
+	return nil
 }
 
 var File_comment_proto protoreflect.FileDescriptor
 
 var file_comment_proto_rawDesc = []byte{
 	0x0a, 0x0d, 0x63, 0x6f, 0x6d, 0x6d, 0x65, 0x6e, 0x74, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x12,
-	0x07, 0x63, 0x6f, 0x6d, 0x6d, 0x65, 0x6e, 0x74, 0x22, 0x20, 0x0a, 0x0a, 0x43, 0x6f, 0x6d, 0x6d,
-	0x65, 0x6e, 0x74, 0x52, 0x65, 0x71, 0x12, 0x12, 0x0a, 0x04, 0x6e, 0x61, 0x6d, 0x65, 0x18, 0x01,
-	0x20, 0x01, 0x28, 0x09, 0x52, 0x04, 0x6e, 0x61, 0x6d, 0x65, 0x22, 0x23, 0x0a, 0x0b, 0x43, 0x6f,
-	0x6d, 0x6d, 0x65, 0x6e, 0x74, 0x52, 0x65, 0x73, 0x70, 0x12, 0x14, 0x0a, 0x05, 0x67, 0x72, 0x65,
-	0x65, 0x74, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x52, 0x05, 0x67, 0x72, 0x65, 0x65, 0x74, 0x32,
-	0x3d, 0x0a, 0x07, 0x43, 0x6f, 0x6d, 0x6d, 0x65, 0x6e, 0x74, 0x12, 0x32, 0x0a, 0x05, 0x67, 0x72,
-	0x65, 0x65, 0x74, 0x12, 0x13, 0x2e, 0x63, 0x6f, 0x6d, 0x6d, 0x65, 0x6e, 0x74, 0x2e, 0x43, 0x6f,
-	0x6d, 0x6d, 0x65, 0x6e, 0x74, 0x52, 0x65, 0x71, 0x1a, 0x14, 0x2e, 0x63, 0x6f, 0x6d, 0x6d, 0x65,
-	0x6e, 0x74, 0x2e, 0x43, 0x6f, 0x6d, 0x6d, 0x65, 0x6e, 0x74, 0x52, 0x65, 0x73, 0x70, 0x42, 0x0b,
-	0x5a, 0x09, 0x2e, 0x2f, 0x63, 0x6f, 0x6d, 0x6d, 0x65, 0x6e, 0x74, 0x62, 0x06, 0x70, 0x72, 0x6f,
-	0x74, 0x6f, 0x33,
+	0x07, 0x63, 0x6f, 0x6d, 0x6d, 0x65, 0x6e, 0x74, 0x22, 0x8e, 0x01, 0x0a, 0x0e, 0x50, 0x75, 0x74,
+	0x43, 0x6f, 0x6d, 0x6d, 0x65, 0x6e, 0x74, 0x52, 0x65, 0x73, 0x70, 0x12, 0x19, 0x0a, 0x08, 0x76,
+	0x69, 0x64, 0x65, 0x6f, 0x5f, 0x69, 0x64, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x52, 0x07, 0x76,
+	0x69, 0x64, 0x65, 0x6f, 0x49, 0x64, 0x12, 0x1f, 0x0a, 0x0b, 0x61, 0x63, 0x74, 0x69, 0x6f, 0x6e,
+	0x5f, 0x74, 0x79, 0x70, 0x65, 0x18, 0x02, 0x20, 0x01, 0x28, 0x09, 0x52, 0x0a, 0x61, 0x63, 0x74,
+	0x69, 0x6f, 0x6e, 0x54, 0x79, 0x70, 0x65, 0x12, 0x21, 0x0a, 0x0c, 0x63, 0x6f, 0x6d, 0x6d, 0x65,
+	0x6e, 0x74, 0x5f, 0x74, 0x65, 0x78, 0x74, 0x18, 0x03, 0x20, 0x01, 0x28, 0x09, 0x52, 0x0b, 0x63,
+	0x6f, 0x6d, 0x6d, 0x65, 0x6e, 0x74, 0x54, 0x65, 0x78, 0x74, 0x12, 0x1d, 0x0a, 0x0a, 0x63, 0x6f,
+	0x6d, 0x6d, 0x65, 0x6e, 0x74, 0x5f, 0x69, 0x64, 0x18, 0x04, 0x20, 0x01, 0x28, 0x09, 0x52, 0x09,
+	0x63, 0x6f, 0x6d, 0x6d, 0x65, 0x6e, 0x74, 0x49, 0x64, 0x22, 0x41, 0x0a, 0x0d, 0x50, 0x75, 0x74,
+	0x43, 0x6f, 0x6d, 0x6d, 0x65, 0x6e, 0x74, 0x52, 0x65, 0x71, 0x12, 0x30, 0x0a, 0x08, 0x63, 0x6f,
+	0x6d, 0x6d, 0x65, 0x6e, 0x74, 0x73, 0x18, 0x01, 0x20, 0x01, 0x28, 0x0b, 0x32, 0x14, 0x2e, 0x63,
+	0x6f, 0x6d, 0x6d, 0x65, 0x6e, 0x74, 0x2e, 0x43, 0x6f, 0x6d, 0x6d, 0x65, 0x6e, 0x74, 0x42, 0x6f,
+	0x64, 0x79, 0x52, 0x08, 0x63, 0x6f, 0x6d, 0x6d, 0x65, 0x6e, 0x74, 0x73, 0x22, 0x2b, 0x0a, 0x0e,
+	0x43, 0x6f, 0x6d, 0x6d, 0x65, 0x6e, 0x74, 0x4c, 0x69, 0x73, 0x74, 0x52, 0x65, 0x71, 0x12, 0x19,
+	0x0a, 0x08, 0x76, 0x69, 0x64, 0x65, 0x6f, 0x5f, 0x69, 0x64, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09,
+	0x52, 0x07, 0x76, 0x69, 0x64, 0x65, 0x6f, 0x49, 0x64, 0x22, 0x91, 0x01, 0x0a, 0x04, 0x55, 0x73,
+	0x65, 0x72, 0x12, 0x0e, 0x0a, 0x02, 0x69, 0x64, 0x18, 0x01, 0x20, 0x01, 0x28, 0x03, 0x52, 0x02,
+	0x69, 0x64, 0x12, 0x12, 0x0a, 0x04, 0x6e, 0x61, 0x6d, 0x65, 0x18, 0x02, 0x20, 0x01, 0x28, 0x09,
+	0x52, 0x04, 0x6e, 0x61, 0x6d, 0x65, 0x12, 0x21, 0x0a, 0x0c, 0x66, 0x6f, 0x6c, 0x6c, 0x6f, 0x77,
+	0x5f, 0x63, 0x6f, 0x75, 0x6e, 0x74, 0x18, 0x03, 0x20, 0x01, 0x28, 0x03, 0x52, 0x0b, 0x66, 0x6f,
+	0x6c, 0x6c, 0x6f, 0x77, 0x43, 0x6f, 0x75, 0x6e, 0x74, 0x12, 0x25, 0x0a, 0x0e, 0x66, 0x6f, 0x6c,
+	0x6c, 0x6f, 0x77, 0x65, 0x72, 0x5f, 0x63, 0x6f, 0x75, 0x6e, 0x74, 0x18, 0x04, 0x20, 0x01, 0x28,
+	0x03, 0x52, 0x0d, 0x66, 0x6f, 0x6c, 0x6c, 0x6f, 0x77, 0x65, 0x72, 0x43, 0x6f, 0x75, 0x6e, 0x74,
+	0x12, 0x1b, 0x0a, 0x09, 0x69, 0x73, 0x5f, 0x66, 0x6f, 0x6c, 0x6c, 0x6f, 0x77, 0x18, 0x06, 0x20,
+	0x01, 0x28, 0x03, 0x52, 0x08, 0x69, 0x73, 0x46, 0x6f, 0x6c, 0x6c, 0x6f, 0x77, 0x22, 0x7b, 0x0a,
+	0x0b, 0x43, 0x6f, 0x6d, 0x6d, 0x65, 0x6e, 0x74, 0x42, 0x6f, 0x64, 0x79, 0x12, 0x0e, 0x0a, 0x02,
+	0x69, 0x64, 0x18, 0x01, 0x20, 0x01, 0x28, 0x03, 0x52, 0x02, 0x69, 0x64, 0x12, 0x21, 0x0a, 0x04,
+	0x75, 0x73, 0x65, 0x72, 0x18, 0x02, 0x20, 0x01, 0x28, 0x0b, 0x32, 0x0d, 0x2e, 0x63, 0x6f, 0x6d,
+	0x6d, 0x65, 0x6e, 0x74, 0x2e, 0x55, 0x73, 0x65, 0x72, 0x52, 0x04, 0x75, 0x73, 0x65, 0x72, 0x12,
+	0x18, 0x0a, 0x07, 0x63, 0x6f, 0x6e, 0x74, 0x65, 0x6e, 0x74, 0x18, 0x03, 0x20, 0x01, 0x28, 0x09,
+	0x52, 0x07, 0x63, 0x6f, 0x6e, 0x74, 0x65, 0x6e, 0x74, 0x12, 0x1f, 0x0a, 0x0b, 0x63, 0x72, 0x65,
+	0x61, 0x74, 0x65, 0x5f, 0x64, 0x61, 0x74, 0x65, 0x18, 0x04, 0x20, 0x01, 0x28, 0x09, 0x52, 0x0a,
+	0x63, 0x72, 0x65, 0x61, 0x74, 0x65, 0x44, 0x61, 0x74, 0x65, 0x22, 0x43, 0x0a, 0x0f, 0x43, 0x6f,
+	0x6d, 0x6d, 0x65, 0x6e, 0x74, 0x4c, 0x69, 0x73, 0x74, 0x52, 0x65, 0x73, 0x70, 0x12, 0x30, 0x0a,
+	0x08, 0x63, 0x6f, 0x6d, 0x6d, 0x65, 0x6e, 0x74, 0x73, 0x18, 0x01, 0x20, 0x03, 0x28, 0x0b, 0x32,
+	0x14, 0x2e, 0x63, 0x6f, 0x6d, 0x6d, 0x65, 0x6e, 0x74, 0x2e, 0x43, 0x6f, 0x6d, 0x6d, 0x65, 0x6e,
+	0x74, 0x42, 0x6f, 0x64, 0x79, 0x52, 0x08, 0x63, 0x6f, 0x6d, 0x6d, 0x65, 0x6e, 0x74, 0x73, 0x32,
+	0x8d, 0x01, 0x0a, 0x07, 0x43, 0x6f, 0x6d, 0x6d, 0x65, 0x6e, 0x74, 0x12, 0x43, 0x0a, 0x0e, 0x67,
+	0x65, 0x74, 0x43, 0x6f, 0x6d, 0x6d, 0x65, 0x6e, 0x74, 0x4c, 0x69, 0x73, 0x74, 0x12, 0x17, 0x2e,
+	0x63, 0x6f, 0x6d, 0x6d, 0x65, 0x6e, 0x74, 0x2e, 0x43, 0x6f, 0x6d, 0x6d, 0x65, 0x6e, 0x74, 0x4c,
+	0x69, 0x73, 0x74, 0x52, 0x65, 0x71, 0x1a, 0x18, 0x2e, 0x63, 0x6f, 0x6d, 0x6d, 0x65, 0x6e, 0x74,
+	0x2e, 0x43, 0x6f, 0x6d, 0x6d, 0x65, 0x6e, 0x74, 0x4c, 0x69, 0x73, 0x74, 0x52, 0x65, 0x73, 0x70,
+	0x12, 0x3d, 0x0a, 0x0a, 0x70, 0x75, 0x74, 0x43, 0x6f, 0x6d, 0x6d, 0x65, 0x6e, 0x74, 0x12, 0x16,
+	0x2e, 0x63, 0x6f, 0x6d, 0x6d, 0x65, 0x6e, 0x74, 0x2e, 0x50, 0x75, 0x74, 0x43, 0x6f, 0x6d, 0x6d,
+	0x65, 0x6e, 0x74, 0x52, 0x65, 0x71, 0x1a, 0x17, 0x2e, 0x63, 0x6f, 0x6d, 0x6d, 0x65, 0x6e, 0x74,
+	0x2e, 0x50, 0x75, 0x74, 0x43, 0x6f, 0x6d, 0x6d, 0x65, 0x6e, 0x74, 0x52, 0x65, 0x73, 0x70, 0x42,
+	0x0b, 0x5a, 0x09, 0x2e, 0x2f, 0x63, 0x6f, 0x6d, 0x6d, 0x65, 0x6e, 0x74, 0x62, 0x06, 0x70, 0x72,
+	0x6f, 0x74, 0x6f, 0x33,
 }
 
 var (
@@ -143,19 +449,28 @@ func file_comment_proto_rawDescGZIP() []byte {
 	return file_comment_proto_rawDescData
 }
 
-var file_comment_proto_msgTypes = make([]protoimpl.MessageInfo, 2)
+var file_comment_proto_msgTypes = make([]protoimpl.MessageInfo, 6)
 var file_comment_proto_goTypes = []interface{}{
-	(*CommentReq)(nil),  // 0: comment.CommentReq
-	(*CommentResp)(nil), // 1: comment.CommentResp
+	(*PutCommentResp)(nil),  // 0: comment.PutCommentResp
+	(*PutCommentReq)(nil),   // 1: comment.PutCommentReq
+	(*CommentListReq)(nil),  // 2: comment.CommentListReq
+	(*User)(nil),            // 3: comment.User
+	(*CommentBody)(nil),     // 4: comment.CommentBody
+	(*CommentListResp)(nil), // 5: comment.CommentListResp
 }
 var file_comment_proto_depIdxs = []int32{
-	0, // 0: comment.Comment.greet:input_type -> comment.CommentReq
-	1, // 1: comment.Comment.greet:output_type -> comment.CommentResp
-	1, // [1:2] is the sub-list for method output_type
-	0, // [0:1] is the sub-list for method input_type
-	0, // [0:0] is the sub-list for extension type_name
-	0, // [0:0] is the sub-list for extension extendee
-	0, // [0:0] is the sub-list for field type_name
+	4, // 0: comment.PutCommentReq.comments:type_name -> comment.CommentBody
+	3, // 1: comment.CommentBody.user:type_name -> comment.User
+	4, // 2: comment.CommentListResp.comments:type_name -> comment.CommentBody
+	2, // 3: comment.Comment.getCommentList:input_type -> comment.CommentListReq
+	1, // 4: comment.Comment.putComment:input_type -> comment.PutCommentReq
+	5, // 5: comment.Comment.getCommentList:output_type -> comment.CommentListResp
+	0, // 6: comment.Comment.putComment:output_type -> comment.PutCommentResp
+	5, // [5:7] is the sub-list for method output_type
+	3, // [3:5] is the sub-list for method input_type
+	3, // [3:3] is the sub-list for extension type_name
+	3, // [3:3] is the sub-list for extension extendee
+	0, // [0:3] is the sub-list for field type_name
 }
 
 func init() { file_comment_proto_init() }
@@ -165,7 +480,7 @@ func file_comment_proto_init() {
 	}
 	if !protoimpl.UnsafeEnabled {
 		file_comment_proto_msgTypes[0].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*CommentReq); i {
+			switch v := v.(*PutCommentResp); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -177,7 +492,55 @@ func file_comment_proto_init() {
 			}
 		}
 		file_comment_proto_msgTypes[1].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*CommentResp); i {
+			switch v := v.(*PutCommentReq); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_comment_proto_msgTypes[2].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*CommentListReq); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_comment_proto_msgTypes[3].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*User); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_comment_proto_msgTypes[4].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*CommentBody); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_comment_proto_msgTypes[5].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*CommentListResp); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -195,7 +558,7 @@ func file_comment_proto_init() {
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: file_comment_proto_rawDesc,
 			NumEnums:      0,
-			NumMessages:   2,
+			NumMessages:   6,
 			NumExtensions: 0,
 			NumServices:   1,
 		},

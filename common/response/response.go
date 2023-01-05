@@ -17,7 +17,6 @@ func Success(resp interface{}) *ResponseSuccessBean {
 		Msg:  "OK",
 		Data: resp,
 	}
-
 }
 
 func Error(errCode uint32, errMsg string) *ResponseErrorBean {

@@ -9,22 +9,22 @@ import (
 	"github.com/zeromicro/go-zero/core/logx"
 )
 
-type GreetLogic struct {
+type GetCommentListLogic struct {
 	ctx    context.Context
 	svcCtx *svc.ServiceContext
 	logx.Logger
 }
 
-func NewGreetLogic(ctx context.Context, svcCtx *svc.ServiceContext) *GreetLogic {
-	return &GreetLogic{
+func NewGetCommentListLogic(ctx context.Context, svcCtx *svc.ServiceContext) *GetCommentListLogic {
+	return &GetCommentListLogic{
 		ctx:    ctx,
 		svcCtx: svcCtx,
 		Logger: logx.WithContext(ctx),
 	}
 }
 
-func (l *GreetLogic) Greet(in *comment.CommentReq) (*comment.CommentResp, error) {
+func (l *GetCommentListLogic) GetCommentList(in *comment.CommentListReq) (*comment.CommentListResp, error) {
 	// todo: add your logic here and delete this line
 
-	return &comment.CommentResp{}, nil
+	return &comment.CommentListResp{}, nil
 }

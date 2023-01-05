@@ -3,6 +3,7 @@ package main
 import (
 	"flag"
 	"fmt"
+	"go_code/Doul/common/interceptor"
 
 	"go_code/Doul/app/comment/cmd/rpc/comment"
 	"go_code/Doul/app/comment/cmd/rpc/internal/config"
@@ -34,6 +35,8 @@ func main() {
 	})
 	defer s.Stop()
 
+	//add log interceptor
+	s.AddUnaryInterceptors(rpcserver.LoggerInterceptor)
 	fmt.Printf("Starting rpc server at %s...\n", c.ListenOn)
 	s.Start()
 }

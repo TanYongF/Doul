@@ -4,14 +4,41 @@ package comment;
 
 option go_package="./comment";
 
-message CommentReq {
-  string name = 1;
+
+message PutCommentResp{
+  string video_id = 1;
+  string action_type = 2;
+  string comment_text = 3;
+  string comment_id =4;
 }
 
-message CommentResp {
-  string greet = 1;
+message PutCommentReq{
+  CommentBody comments = 1;
+}
+
+message CommentListReq{
+  string video_id = 1;
+}
+
+message User{
+  int64 id = 1;
+  string name = 2;
+  int64  follow_count = 3;
+  int64  follower_count = 4;
+  int64  is_follow = 6;
+}
+message CommentBody{
+  int64 id = 1;
+  User user = 2;
+  string content = 3;
+  string create_date = 4;
+}
+message CommentListResp{
+  repeated CommentBody comments = 1;
 }
 
 service Comment {
-  rpc greet(CommentReq) returns (CommentResp);
+  rpc getCommentList(CommentListReq) returns (CommentListResp);
+  rpc putComment(PutCommentReq) returns (PutCommentResp);
 }
+

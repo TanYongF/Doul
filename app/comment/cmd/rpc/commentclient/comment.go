@@ -13,11 +13,16 @@ import (
 )
 
 type (
-	CommentReq  = comment.CommentReq
-	CommentResp = comment.CommentResp
+	CommentBody     = comment.CommentBody
+	CommentListReq  = comment.CommentListReq
+	CommentListResp = comment.CommentListResp
+	PutCommentReq   = comment.PutCommentReq
+	PutCommentResp  = comment.PutCommentResp
+	User            = comment.User
 
 	Comment interface {
-		Greet(ctx context.Context, in *CommentReq, opts ...grpc.CallOption) (*CommentResp, error)
+		GetCommentList(ctx context.Context, in *CommentListReq, opts ...grpc.CallOption) (*CommentListResp, error)
+		PutComment(ctx context.Context, in *PutCommentReq, opts ...grpc.CallOption) (*PutCommentResp, error)
 	}
 
 	defaultComment struct {
@@ -31,7 +36,12 @@ func NewComment(cli zrpc.Client) Comment {
 	}
 }
 
-func (m *defaultComment) Greet(ctx context.Context, in *CommentReq, opts ...grpc.CallOption) (*CommentResp, error) {
+func (m *defaultComment) GetCommentList(ctx context.Context, in *CommentListReq, opts ...grpc.CallOption) (*CommentListResp, error) {
 	client := comment.NewCommentClient(m.cli.Conn())
-	return client.Greet(ctx, in, opts...)
+	return client.GetCommentList(ctx, in, opts...)
+}
+
+func (m *defaultComment) PutComment(ctx context.Context, in *PutCommentReq, opts ...grpc.CallOption) (*PutCommentResp, error) {
+	client := comment.NewCommentClient(m.cli.Conn())
+	return client.PutComment(ctx, in, opts...)
 }

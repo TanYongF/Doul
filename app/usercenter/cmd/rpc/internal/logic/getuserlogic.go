@@ -2,11 +2,11 @@ package logic
 
 import (
 	"context"
-
+	"github.com/pkg/errors"
+	"github.com/zeromicro/go-zero/core/logx"
+	"github.com/zeromicro/go-zero/core/stores/sqlx"
 	"go_code/Doul/app/usercenter/cmd/rpc/internal/svc"
 	"go_code/Doul/app/usercenter/cmd/rpc/user"
-
-	"github.com/zeromicro/go-zero/core/logx"
 )
 
 type GetUserLogic struct {
@@ -26,6 +26,9 @@ func NewGetUserLogic(ctx context.Context, svcCtx *svc.ServiceContext) *GetUserLo
 func (l *GetUserLogic) GetUser(in *user.UserInfoReq) (*user.UserInfoReply, error) {
 	userFind, err := l.svcCtx.UserModel.FindOne(l.ctx, in.GetId())
 	if err != nil {
+		if errors.Is(err, sqlx.ErrNotFound) {
+			return nil, errors.Wrapf(ErrUserNoExistsError, "用户名id=%d未找到", in.Id)
+		}
 		return nil, err
 	}
 

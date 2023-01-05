@@ -22,7 +22,12 @@ func NewCommentServer(svcCtx *svc.ServiceContext) *CommentServer {
 	}
 }
 
-func (s *CommentServer) Greet(ctx context.Context, in *comment.CommentReq) (*comment.CommentResp, error) {
-	l := logic.NewGreetLogic(ctx, s.svcCtx)
-	return l.Greet(in)
+func (s *CommentServer) GetCommentList(ctx context.Context, in *comment.CommentListReq) (*comment.CommentListResp, error) {
+	l := logic.NewGetCommentListLogic(ctx, s.svcCtx)
+	return l.GetCommentList(in)
+}
+
+func (s *CommentServer) PutComment(ctx context.Context, in *comment.PutCommentReq) (*comment.PutCommentResp, error) {
+	l := logic.NewPutCommentLogic(ctx, s.svcCtx)
+	return l.PutComment(in)
 }
