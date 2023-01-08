@@ -5,10 +5,10 @@ import (
 	"fmt"
 	"go_code/Doul/common/interceptor"
 
-	"go_code/Doul/app/usercenter/cmd/rpc/internal/config"
-	"go_code/Doul/app/usercenter/cmd/rpc/internal/server"
-	"go_code/Doul/app/usercenter/cmd/rpc/internal/svc"
-	"go_code/Doul/app/usercenter/cmd/rpc/user"
+	"go_code/Doul/app/video/cmd/rpc/internal/config"
+	"go_code/Doul/app/video/cmd/rpc/internal/server"
+	"go_code/Doul/app/video/cmd/rpc/internal/svc"
+	"go_code/Doul/app/video/cmd/rpc/video"
 
 	"github.com/zeromicro/go-zero/core/conf"
 	"github.com/zeromicro/go-zero/core/service"
@@ -17,7 +17,7 @@ import (
 	"google.golang.org/grpc/reflection"
 )
 
-var configFile = flag.String("f", "etc/usercenter.yaml", "the config file")
+var configFile = flag.String("f", "etc/videorpc.yaml", "the config file")
 
 func main() {
 	flag.Parse()
@@ -27,17 +27,16 @@ func main() {
 	ctx := svc.NewServiceContext(c)
 
 	s := zrpc.MustNewServer(c.RpcServerConf, func(grpcServer *grpc.Server) {
-		user.RegisterUserServer(grpcServer, server.NewUserServer(ctx))
+		video.RegisterVideoServer(grpcServer, server.NewVideoServer(ctx))
 
 		if c.Mode == service.DevMode || c.Mode == service.TestMode {
 			reflection.Register(grpcServer)
 		}
 	})
+	defer s.Stop()
 
 	//add log interceptor
 	s.AddUnaryInterceptors(interceptor.LoggerInterceptor)
-
-	defer s.Stop()
 
 	fmt.Printf("Starting rpc server at %s...\n", c.ListenOn)
 	s.Start()

@@ -2,6 +2,8 @@ syntax = "proto3";
 
 package video;
 
+option go_package="./video";
+
 message StreamReq {
   string name = 1;
 }
@@ -11,10 +13,8 @@ message StreamResp {
 }
 
 
-message {
 
-}
 
-service StreamGreeter {
+service Video {
   rpc greet(StreamReq) returns (StreamResp);
 }

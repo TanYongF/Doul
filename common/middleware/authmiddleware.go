@@ -29,7 +29,11 @@ func NewAuthMiddleware(userClient userclient.User) *AuthMiddleware {
 //
 func (m *AuthMiddleware) Handle(next http.HandlerFunc) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
+		//Get token from query or form-data
 		token := r.FormValue("token")
+		if stringx.HasEmpty(token) {
+			token = r.PostFormValue("token")
+		}
 
 		//check is the token empty
 		if stringx.HasEmpty(token) {
@@ -42,7 +46,7 @@ func (m *AuthMiddleware) Handle(next http.HandlerFunc) http.HandlerFunc {
 			Token: token,
 		})
 
-		//if has err or no authed, return
+		//if has err or no authed, return message
 		if err != nil {
 			response.HttpResult(r, w, nil, err)
 			return

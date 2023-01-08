@@ -40,7 +40,7 @@ type CommentActionResp {
 }
 
 type CommentListReq {
-	Token   string `form:"token"`
+	Token   string `json:"comment,omitempty"`
 	VideoId int64  `form:"video_id"`
 }
 

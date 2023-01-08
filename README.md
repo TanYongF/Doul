@@ -1,35 +1,87 @@
 # Doul
-一款go语言开发的分布式短视频后端服务
-同时也是**南京邮电大学**的最后一份作业（毕业设计）~
+##  一、项目介绍
 
-### 接口文档
- 使用ApiFox来维护接口，[接口文档在线地址](https://www.apifox.cn/apidoc/shared-b8d7c521-f55a-4b7d-84b2-cf253c111154)
+一款go语言开发的分布式短视频后端服务同时也是**南京邮电大学**的最后一份作业（毕业设计）~
 
-### 技术选型
-1. [go-zero](https://go-zero.dev/cn/)：一款开箱即用的RPC框架（基于zrpc）
-2. etcd: 服务发现
+该系统注重的几个特点：
+
+- 低代码，得益于`Goctl`工具
+- 分布式系统，基于`grpc`协议
+- 拥抱CI/CD，编码、构建、部署自动化
+- 高可用（努力做到…）
+
+## 二、 开发文档
+
+### 0. 系统架构
+
+包含部分技术，当然还不完善……
+
+![未命名文件](https://kauizhaotan.oss-accelerate.aliyuncs.com/img/未命名文件.jpg?x-oss-process=style/water)
+
+在线文档：https://www.processon.com/view/link/6279170d1efad40df02ee683
+
+### 1. API接口
+
+API接口是指服务端暴露给Web、客户端、Browser的接口，其是通过HTTP协议来传输的。
+
+ 该项目使用[APIFOX](https://www.apifox.cn/)来管理和维护接口，同时也可以对接口进行快速测试和代码快速生成。[接口文档在线地址](https://www.apifox.cn/apidoc/shared-b8d7c521-f55a-4b7d-84b2-cf253c111154)
+
+### 2. 部分技术选型
+1. [go-zero](https://go-zero.dev/cn/)：一款开箱即用的RPC框架（基于zrpc），快速交付是其一大特点；
+2. [etcd](https://etcd.io/): 一种高性能、分布式K-V键值对存储系统，该项目作为**服务发现**和注册中心使用；
 3. [xid](https://github.com/rs/xid) : UUID生成器
+4. [Nginx](https://www.nginx.com/):高性能服务器，用来作为网关提供**负载均衡**以及**反向代理**；
+5. [Docker](https://www.docker.com/): Devops， 用来快速部署各个微服务。
+6. [Redis](http://www.redis.cn/)、[Mysql](www.mysql.com)等缓存以及数据库组件等
+7. 其他待完善…
 
-### 关于API
+### 3. 服务划分
 
-每个微服务都有自己的的API网关
+主要针对
+
+系统暂定4个微服务，每个微服务及其实现功能如下：
 
  - UserCenter (用户中心)
+   - 用户注册
+   - 用户登陆
+   - 用户鉴权（特定需要Auth的端口）
+   - 获取用户信息等
+
  - Comment (评论中心)
+   - 评论列表
+   - 评论操作
+   - 敏感词过滤
+
  - Friend (关系接口)
+   - 粉丝列表
+   - 关注列表
+   - 关注操作
  - Video (视频接口)
+   - 基础视频流接口（搭配**推荐算法**）
+   - 点赞
+   - 投稿列表
+   - 发布列表
 
-由于有多个`API`网关，所以应该是使用更上一层的网关来聚合每个单独API
 
-使用`Nginx`作为上层网关，具体配置如下：
-```
+## 三、问题文档
+
+这里主要整理开发过程中的一些问题和解决的方法思路。当然，也会参考优秀开源项目的经验。
+
+### 1. Nginx的引入
+
+每个微服务都有自己的的API网关，一个API后面会调用多个RPC服务，所以后期一个RPC服务的修改就需要重构整个API服务，所以为每个微服务创建自己的网关，因此上层必须使用**统一网关**来做流量分发，此项目使用`Nginx`作为统一流量入口，具体作用就是流量通过Nginx服务器分发给各个微服务的网关上。具体参考[使用Nginx作为网关](https://github.com/Mikaelemmmm/go-zero-looklook/blob/main/doc/chinese/2-nginx%E7%BD%91%E5%85%B3.md)
+
+本项目的Nginx配置如下：
+
+```nginx
 #doul项目
 server{
-    listen 8094;
+    listen 8094; #监听8094端口
     #access_log /var/log/nginx/looklook.com_access.log;
     #error_log /var/log/nginx/looklook.com_error.log;
 
 
+     # 将不同路径映射到不同服务器的不同端口
     location ~ /douyin/user/ {
       proxy_set_header Host $http_host;
       proxy_set_header X-Real-IP $remote_addr;
@@ -49,7 +101,7 @@ server{
 
 ```
 
-### 关于日志处理方面
+### 2. 日志处理方面
 
 在gRPC中，当调用rpc服务发生错误时， 其返回的类型是 `status.error` , 它是通过`status code`来判断错误类型 具体可查看可查看[Status Code](https://grpc.github.io/grpc/core/md_doc_statuscodes.html)
 
@@ -85,12 +137,9 @@ type CodeError struct {
 - [Go error 最佳实践](https://medium.com/@dche423/golang-error-handling-best-practice-cn-42982bd72672)
 - https://chanjarster.github.io/post/go/err-throw-rules/
 
+### 3. Etcd安装（单机安装）
 
-
-
-
-
-## Docker下的Etcd安装（单机安装）
+etcd作为服务注册中心，是启动项目的前置要求，下面是在本人的`Centos 7`上通过Docker安装的方式。
 
 ```shell
 docker pull bitnami/etcd:latest #拉取镜像
