@@ -13,11 +13,19 @@ import (
 )
 
 type (
-	StreamReq  = video.StreamReq
-	StreamResp = video.StreamResp
+	FavoriteListReq  = video.FavoriteListReq
+	FavoriteListResp = video.FavoriteListResp
+	FeedReq          = video.FeedReq
+	FeedResp         = video.FeedResp
+	PublishListReq   = video.PublishListReq
+	PublishListResp  = video.PublishListResp
+	UserPO           = video.UserPO
+	VideoPO          = video.VideoPO
 
 	Video interface {
-		Greet(ctx context.Context, in *StreamReq, opts ...grpc.CallOption) (*StreamResp, error)
+		Feed(ctx context.Context, in *FeedReq, opts ...grpc.CallOption) (*FeedResp, error)
+		PublishList(ctx context.Context, in *PublishListReq, opts ...grpc.CallOption) (*PublishListResp, error)
+		FavoriteList(ctx context.Context, in *FavoriteListReq, opts ...grpc.CallOption) (*FavoriteListResp, error)
 	}
 
 	defaultVideo struct {
@@ -31,7 +39,17 @@ func NewVideo(cli zrpc.Client) Video {
 	}
 }
 
-func (m *defaultVideo) Greet(ctx context.Context, in *StreamReq, opts ...grpc.CallOption) (*StreamResp, error) {
+func (m *defaultVideo) Feed(ctx context.Context, in *FeedReq, opts ...grpc.CallOption) (*FeedResp, error) {
 	client := video.NewVideoClient(m.cli.Conn())
-	return client.Greet(ctx, in, opts...)
+	return client.Feed(ctx, in, opts...)
+}
+
+func (m *defaultVideo) PublishList(ctx context.Context, in *PublishListReq, opts ...grpc.CallOption) (*PublishListResp, error) {
+	client := video.NewVideoClient(m.cli.Conn())
+	return client.PublishList(ctx, in, opts...)
+}
+
+func (m *defaultVideo) FavoriteList(ctx context.Context, in *FavoriteListReq, opts ...grpc.CallOption) (*FavoriteListResp, error) {
+	client := video.NewVideoClient(m.cli.Conn())
+	return client.FavoriteList(ctx, in, opts...)
 }

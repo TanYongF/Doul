@@ -4,17 +4,52 @@ package video;
 
 option go_package="./video";
 
-message StreamReq {
-  string name = 1;
+message VideoPO {
+  UserPO Author = 1; // 视频作者信息
+  int64 CommentCount = 2; // 视频的评论总数
+  string CoverURL = 3; // 视频封面地址
+  int64 FavoriteCount = 4; // 视频的点赞总数
+  int64 VideoId = 5; // 视频唯一标识
+  bool IsFavorite = 6; // true-已点赞，false-未点赞
+  string PlayURL = 7; // 视频播放地址
+  string Title = 8; // 视频标题
 }
 
-message StreamResp {
-  string greet = 1;
+message UserPO {
+  int64 FollowCount = 1; // 关注总数
+  int64 FollowerCount = 2; // 粉丝总数
+  int64 UserId = 3; // 用户id
+  bool IsFollow = 4; // true-已关注，false-未关注
+  string Name = 5; // 用户名称
 }
 
 
+message FeedReq{
+  string Latest_time = 1;
+}
 
+message FeedResp {
+  string NextTime = 1; // 本次返回的视频中，发布最早的时间，作为下次请求时的latest_time
+  repeated VideoPO VideoList = 2; // 视频列表
+}
+
+message publishListReq{
+  string user_id = 1;
+}
+
+message publishListResp{
+  repeated VideoPO VideoList = 1; // 视频列表
+}
+
+message favoriteListReq{
+  string user_id = 1;
+}
+message favoriteListResp{
+  repeated VideoPO VideoList = 1; // 视频列表
+}
 
 service Video {
-  rpc greet(StreamReq) returns (StreamResp);
+  rpc feed(FeedReq) returns (FeedResp);
+  rpc publishList(publishListReq) returns (publishListResp);
+  rpc favoriteList(favoriteListReq) returns (favoriteListResp);
 }

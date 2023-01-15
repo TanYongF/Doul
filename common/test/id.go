@@ -59,12 +59,37 @@ func genUUIDv4() {
 	//fmt.Printf("github.com/satori/go.uuid:   %s\n", id)
 }
 
+type User struct {
+	Id            int64  `json:"id,omitempty" gorm:"column:user_id; primaryKey"`
+	Name          string `json:"name,omitempty" gorm:"column:name"`
+	PassWord      string `gorm:"column:password" json:"-"`
+	FollowCount   int64  `json:"follow_count,omitempty" gorm:"column:follow_count"`
+	FollowerCount int64  `json:"follower_count,omitempty" gorm:"column:follower_count"`
+	IsFollow      bool   `json:"is_follow,omitempty" gorm:"column:is_follow"`
+	Salt          string `json:"-" gorm:"column:salt"`
+	Token         string `gorm:"-" json:"token,omitempty"`
+}
+type Video struct {
+	Id            int64  `json:"id,omitempty" gorm:"column:video_id"`
+	Author        User   `json:"author" gorm:"-" sql:"-" ` //不会入库，只做返回给前端的时候结构体
+	UserId        int64  `json:"user_id" gorm:"user_id"`   //入库，实际存入的是userId
+	PlayUrl       string `json:"play_url,omitempty"`
+	CoverUrl      string `json:"cover_url,omitempty"`
+	FavoriteCount int64  `json:"favorite_count,omitempty"`
+	CommentCount  int64  `json:"comment_count,omitempty"`
+	IsFavorite    bool   `json:"is_favorite,omitempty" gorm:"-" sql:"-"`
+	Title         string `json:"title,omitempty"`
+}
+
 func main() {
-	genXid()
-	genKsuid()
-	genBetterGUID()
-	genUlid()
-	genSonyflake()
-	genSid()
-	genUUIDv4()
+	//dsn := "doul:Tyf136212.@tcp(81.68.239.206:3306)/douyin?charset=utf8mb4&parseTime=true&loc=Asia%2FShanghai"
+	//db, _ := gorm.Open(mysql.Open(dsn), &gorm.Config{
+	//	NamingStrategy: schema.NamingStrategy{
+	//		TablePrefix:   "dy_", // table name prefix, table for `User` would be `t_users`
+	//		SingularTable: true,  // use singular table name, table for `User` would be `user` with this option enabled
+	//		NoLowerCase:   true,  // skip the snake_casing of names
+	//	},
+	//})
+	//db.Model(Video{}).Preload()
+
 }

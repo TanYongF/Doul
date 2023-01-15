@@ -2,6 +2,9 @@ package logic
 
 import (
 	"context"
+	"github.com/jinzhu/copier"
+	"go_code/Doul/app/video/cmd/rpc/videoclient"
+	"time"
 
 	"go_code/Doul/app/video/cmd/api/internal/svc"
 	"go_code/Doul/app/video/cmd/api/internal/types"
@@ -24,7 +27,22 @@ func NewFeedLogic(ctx context.Context, svcCtx *svc.ServiceContext) *FeedLogic {
 }
 
 func (l *FeedLogic) Feed(req *types.FeedReq) (resp *types.FeedResp, err error) {
-	// todo: add your logic here and delete this line
+	feeds, err := l.svcCtx.VideoRpc.Feed(l.ctx, &videoclient.FeedReq{
+		LatestTime: req.LastestTime,
+	})
+	if err != nil {
+		return nil, err
+	}
+	videos := make([]types.Video, len(feeds.VideoList))
 
-	return
+	for i := 1; i < len(feeds.VideoList); i++ {
+		copier.Copy(&videos[i], &feeds.VideoList[i])
+		copier.Copy(&videos[i].Author, &feeds.VideoList[i].Author)
+	}
+
+	var nextTime = int64(time.Now().Second())
+	return &types.FeedResp{
+		NextTime:  &nextTime,
+		VideoList: videos,
+	}, nil
 }

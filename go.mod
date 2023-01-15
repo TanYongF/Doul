@@ -4,6 +4,7 @@ go 1.17
 
 require (
 	github.com/chilts/sid v0.0.0-20190607042430-660e94789ec9
+	github.com/jinzhu/copier v0.3.5
 	github.com/kjk/betterguid v0.0.0-20170621091430-c442874ba63a
 	github.com/oklog/ulid v1.3.1
 	github.com/pkg/errors v0.9.1
@@ -14,6 +15,8 @@ require (
 	github.com/zeromicro/go-zero v1.4.3
 	google.golang.org/grpc v1.51.0
 	google.golang.org/protobuf v1.28.1
+	gorm.io/driver/mysql v1.4.5
+	gorm.io/gorm v1.24.3
 )
 
 require (
@@ -40,6 +43,8 @@ require (
 	github.com/google/uuid v1.3.0 // indirect
 	github.com/googleapis/gnostic v0.5.5 // indirect
 	github.com/grpc-ecosystem/grpc-gateway/v2 v2.7.0 // indirect
+	github.com/jinzhu/inflection v1.0.0 // indirect
+	github.com/jinzhu/now v1.1.5 // indirect
 	github.com/json-iterator/go v1.1.12 // indirect
 	github.com/mattn/go-colorable v0.1.9 // indirect
 	github.com/mattn/go-isatty v0.0.14 // indirect

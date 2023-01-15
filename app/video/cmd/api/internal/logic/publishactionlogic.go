@@ -2,7 +2,6 @@ package logic
 
 import (
 	"context"
-	"go_code/Doul/app/video/cmd/api/internal/handler"
 
 	"go_code/Doul/app/video/cmd/api/internal/svc"
 	"go_code/Doul/app/video/cmd/api/internal/types"
@@ -24,7 +23,7 @@ func NewPublishActionLogic(ctx context.Context, svcCtx *svc.ServiceContext) *Pub
 	}
 }
 
-func (l *PublishActionLogic) PublishAction(req *handler.ParamRelationAction) (resp *types.PublishActionResp, err error) {
+func (l *PublishActionLogic) PublishAction(req *types.PublishActionReq) (resp *types.PublishActionResp, err error) {
 	// todo: add your logic here and delete this line
 
 	return

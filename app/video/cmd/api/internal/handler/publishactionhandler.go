@@ -1,7 +1,6 @@
 package handler
 
 import (
-	"mime/multipart"
 	"net/http"
 
 	"github.com/zeromicro/go-zero/rest/httpx"
@@ -11,14 +10,9 @@ import (
 	"go_code/Doul/common/response"
 )
 
-type ParamRelationAction struct {
-	types.PublishActionReq
-	Data multipart.FileHeader
-}
-
 func publishActionHandler(svcCtx *svc.ServiceContext) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
-		var req ParamRelationAction
+		var req types.PublishActionReq
 		if err := httpx.Parse(r, &req); err != nil {
 			httpx.ErrorCtx(r.Context(), w, err)
 			return

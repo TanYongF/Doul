@@ -98,8 +98,11 @@ server{
        proxy_pass http://127.0.0.1:8888;
     }
 }
-
 ```
+
+参考文档: 
+
+1. [Nginx location配置](https://juejin.cn/post/6844903849166110733)
 
 ### 2. 日志处理方面
 
@@ -163,4 +166,10 @@ docker run -it --rm \
     bitnami/etcd:latest etcdctl --endpoints http://etcd-server:2379 put /message Hello
 
 ```
+
+### 4. sqlx踩坑
+
+注意查询多行是 `c.QueryRows` 而查询单行是`c.QueryRow`且查询出的字段数量以及名称应该和结构体字段完全匹配
+
+参考资料
 

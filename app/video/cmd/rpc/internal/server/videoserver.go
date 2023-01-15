@@ -22,7 +22,17 @@ func NewVideoServer(svcCtx *svc.ServiceContext) *VideoServer {
 	}
 }
 
-func (s *VideoServer) Greet(ctx context.Context, in *video.StreamReq) (*video.StreamResp, error) {
-	l := logic.NewGreetLogic(ctx, s.svcCtx)
-	return l.Greet(in)
+func (s *VideoServer) Feed(ctx context.Context, in *video.FeedReq) (*video.FeedResp, error) {
+	l := logic.NewFeedLogic(ctx, s.svcCtx)
+	return l.Feed(in)
+}
+
+func (s *VideoServer) PublishList(ctx context.Context, in *video.PublishListReq) (*video.PublishListResp, error) {
+	l := logic.NewPublishListLogic(ctx, s.svcCtx)
+	return l.PublishList(in)
+}
+
+func (s *VideoServer) FavoriteList(ctx context.Context, in *video.FavoriteListReq) (*video.FavoriteListResp, error) {
+	l := logic.NewFavoriteListLogic(ctx, s.svcCtx)
+	return l.FavoriteList(in)
 }
