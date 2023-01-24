@@ -9,70 +9,35 @@ import (
 	"net/http"
 )
 
-//http返回
+// HttpResult Union Http Response Func
 func HttpResult(r *http.Request, w http.ResponseWriter, resp interface{}, err error) {
-
 	if err == nil {
-		//成功返回
+		//成功直接返回
 		//r := Success(resp)
 		httpx.WriteJson(w, http.StatusOK, resp)
 	} else {
-		//错误返回
-		errcode := xerr.SERVER_COMMON_ERROR
-		errmsg := "服务器开小差啦，稍后再来试一试"
+		//默认错误返回，当不是自定义错误时候，返回此错误
+		errCode := xerr.SERVER_COMMON_ERROR
+		errMsg := xerr.Message[errCode]
 
-		causeErr := errors.Cause(err)                // err类型
-		if e, ok := causeErr.(*xerr.CodeError); ok { //自定义错误类型
-			//自定义CodeError
-			errcode = e.GetErrCode()
-			errmsg = e.GetErrMsg()
+		causeErr := errors.Cause(err) // err类型
+		if e, ok := causeErr.(*xerr.CodeError); ok {
+			//If the error is type of Customized Error, return it to user
+			errCode = e.GetErrCode()
+			errMsg = e.GetErrMsg()
 		} else {
-			if gstatus, ok := status.FromError(causeErr); ok { // grpc err错误
-				grpcCode := uint32(gstatus.Code())
-				if xerr.IsCodeErr(grpcCode) { //区分自定义错误跟系统底层、db等错误，底层、db错误不能返回给前端
-					errcode = grpcCode
-					errmsg = gstatus.Message()
+			//If the error is the error from rpc, check the grpc-error's states code is the Customized Error's code
+			if gStatus, ok := status.FromError(causeErr); ok { // grpc err错误
+				grpcCode := uint32(gStatus.Code())
+				//区分自定义错误跟系统底层、db等错误，底层、db错误不能返回给前端
+				if xerr.IsCodeErr(grpcCode) {
+					errCode = grpcCode
+					errMsg = gStatus.Message()
 				}
 			}
 		}
 
 		logx.WithContext(r.Context()).Errorf("【API-ERR】 : %+v ", err)
-
-		httpx.WriteJson(w, http.StatusBadRequest, Error(errcode, errmsg))
-	}
-}
-
-//todo DEBUG
-
-//http返回
-func HttpResult2(r *http.Request, w http.ResponseWriter, resp interface{}, err error) {
-
-	if err == nil {
-		//成功返回
-		r := Success(resp)
-		httpx.WriteJson(w, http.StatusOK, r)
-	} else {
-		//错误返回
-		errcode := xerr.SERVER_COMMON_ERROR
-		errmsg := "服务器开小差啦，稍后再来试一试"
-
-		causeErr := errors.Cause(err)                // err类型
-		if e, ok := causeErr.(*xerr.CodeError); ok { //自定义错误类型
-			//自定义CodeError
-			errcode = e.GetErrCode()
-			errmsg = e.GetErrMsg()
-		} else {
-			if gstatus, ok := status.FromError(causeErr); ok { // grpc err错误
-				grpcCode := uint32(gstatus.Code())
-				if xerr.IsCodeErr(grpcCode) { //区分自定义错误跟系统底层、db等错误，底层、db错误不能返回给前端
-					errcode = grpcCode
-					errmsg = gstatus.Message()
-				}
-			}
-		}
-
-		logx.WithContext(r.Context()).Errorf("【API-ERR】 : %+v ", err)
-
-		httpx.WriteJson(w, http.StatusBadRequest, Error(errcode, errmsg))
+		httpx.WriteJson(w, http.StatusBadRequest, Error(errCode, errMsg))
 	}
 }

@@ -37,6 +37,7 @@ func (l *LoginLogic) Login(in *user.LoginReq) (*user.LoginReply, error) {
 	if err != nil {
 		return nil, err
 	}
+
 	//Generate token and user detail json
 	token := tool.TokenGenerator()
 	userJson, _ := json.Marshal(*dyuser)
@@ -56,7 +57,6 @@ func (l *LoginLogic) Login(in *user.LoginReq) (*user.LoginReply, error) {
 }
 
 func (l *LoginLogic) checkUser(username string, password string) (dbUser *model.DyUser, err error) {
-	//查找用户是否存在
 	dbUser, err = l.svcCtx.UserModel.FindOneByUsername(l.ctx, username)
 	//if has error
 	if err != nil {

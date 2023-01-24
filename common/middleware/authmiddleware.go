@@ -55,6 +55,6 @@ func (m *AuthMiddleware) Handle(next http.HandlerFunc) http.HandlerFunc {
 			logx.Infof("user %s has not authed", r.FormValue("token"))
 			return
 		}
-		next(w, r)
+		next(w, r.WithContext(context.WithValue(r.Context(), "user_id", auth.AuthedId)))
 	}
 }

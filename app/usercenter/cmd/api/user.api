@@ -1,7 +1,15 @@
 type (
-	UserLoginRes {
-		UserId int64  `json:"user_id,omitempty"`
-		Token  string `json:"token"`
+	CommonResp {
+		Code uint32 `json:"status_code" default:"0"`
+		Msg  string `json:"status_msg" default:"OK"`
+	}
+
+	UserPO {
+		FollowCount   int64  `json:"follow_count"`   // 关注总数
+		FollowerCount int64  `json:"follower_count"` // 粉丝总数
+		ID            int64  `json:"id"`             // 用户id
+		IsFollow      bool   `json:"is_follow"`      // true-已关注，false-未关注
+		Name          string `json:"name"`
 	}
 
 	LoginReq {
@@ -14,20 +22,25 @@ type (
 		Password string `form:"password"`
 	}
 
+	InfoReq {
+		UserId int64 `form:"user_id,omitempty"`
+	}
+
+	UserLoginRes {
+		CommonResp
+		UserId int64  `json:"user_id,omitempty"`
+		Token  string `json:"token"`
+	}
+
 	RegisterRes {
+		CommonResp
 		UserId int64  `json:"user_id,omitempty"`
 		Token  string `json:"token"`
 	}
 
 	InfoRes {
-		FollowCount   int64  `json:"follow_count"`   // 关注总数
-		FollowerCount int64  `json:"follower_count"` // 粉丝总数
-		ID            int64  `json:"id"`             // 用户id
-		IsFollow      bool   `json:"is_follow"`      // true-已关注，false-未关注
-		Name          string `json:"name"`
-	}
-	InfoReq {
-		UserId int64 `form:"user_id,omitempty"`
+		CommonResp
+		User UserPO `json:"user"`
 	}
 )
 

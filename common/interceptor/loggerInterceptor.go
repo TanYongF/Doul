@@ -13,8 +13,8 @@ import (
 //
 // LoggerInterceptor
 //  @Description: 	when rpc-server throw errors to api-server, change the state-error type
-// 				 	ErrorCode (Customized), so that api-server can know that is the error
-//				 	from rpc-server a type of Customized ErrorCode:
+// 				 	ErrorCode (Customized), so that api-server can know that are the errors
+//				 	which from rpc-server belong type of Customized ErrorCode:
 //					if yes : api-server can throw the rpc-error to user
 //					if no  : api-server will not throw the error.
 //  @param ctx
@@ -27,7 +27,8 @@ import (
 func LoggerInterceptor(ctx context.Context, req interface{}, info *grpc.UnaryServerInfo, handler grpc.UnaryHandler) (resp interface{}, err error) {
 	resp, err = handler(ctx, req)
 	if err != nil {
-		causeErr := errors.Cause(err)                // err类型
+		causeErr := errors.Cause(err) // err类型
+		// 如果错误类型是CoderError自定义类型，那么就会返回值给用户
 		if e, ok := causeErr.(*xerr.CodeError); ok { //自定义错误类型
 			logx.WithContext(ctx).Errorf("【RPC-SRV-ERR】 %+v", err)
 			//转成grpc err

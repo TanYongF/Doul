@@ -31,8 +31,6 @@ func (l *GetUserLogic) GetUser(in *user.UserInfoReq) (*user.UserInfoReply, error
 		}
 		return nil, err
 	}
-
-	//todo 此处应该完成查询 is_follow 状态
 	return &user.UserInfoReply{
 		Id:            userFind.UserId,
 		Name:          userFind.Name,

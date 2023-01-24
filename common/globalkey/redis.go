@@ -3,7 +3,7 @@ package globalkey
 import "time"
 
 var (
-	TokenPrefix     = "tk:"
+	TokenPrefix     = "cache:douyin:dyUser:token:"
 	UserPrefix      = "user:"
 	TokenExpireTime = time.Hour * 24
 )

@@ -12,7 +12,7 @@ require (
 	github.com/satori/go.uuid v1.2.0
 	github.com/segmentio/ksuid v1.0.4
 	github.com/sony/sonyflake v1.1.0
-	github.com/zeromicro/go-zero v1.4.3
+	github.com/zeromicro/go-zero v1.4.4
 	google.golang.org/grpc v1.51.0
 	google.golang.org/protobuf v1.28.1
 	gorm.io/driver/mysql v1.4.5
@@ -66,6 +66,7 @@ require (
 	go.opentelemetry.io/otel/exporters/otlp/internal/retry v1.10.0 // indirect
 	go.opentelemetry.io/otel/exporters/otlp/otlptrace v1.10.0 // indirect
 	go.opentelemetry.io/otel/exporters/otlp/otlptrace/otlptracegrpc v1.10.0 // indirect
+	go.opentelemetry.io/otel/exporters/otlp/otlptrace/otlptracehttp v1.10.0 // indirect
 	go.opentelemetry.io/otel/exporters/zipkin v1.10.0 // indirect
 	go.opentelemetry.io/otel/sdk v1.10.0 // indirect
 	go.opentelemetry.io/otel/trace v1.10.0 // indirect

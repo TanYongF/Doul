@@ -41,3 +41,18 @@ func (s *UserServer) CheckAuth(ctx context.Context, in *user.CheckAuthReq) (*use
 	l := logic.NewCheckAuthLogic(ctx, s.svcCtx)
 	return l.CheckAuth(in)
 }
+
+func (s *UserServer) CheckIsFollow(ctx context.Context, in *user.CheckIsFollowReq) (*user.CheckIsFollowResp, error) {
+	l := logic.NewCheckIsFollowLogic(ctx, s.svcCtx)
+	return l.CheckIsFollow(in)
+}
+
+func (s *UserServer) GetFollowingCount(ctx context.Context, in *user.GetFollowingCountReq) (*user.GetFollowingCountResp, error) {
+	l := logic.NewGetFollowingCountLogic(ctx, s.svcCtx)
+	return l.GetFollowingCount(in)
+}
+
+func (s *UserServer) GetFollowerCount(ctx context.Context, in *user.GetFollowerCountReq) (*user.GetFollowerCountResp, error) {
+	l := logic.NewGetFollowerCountLogic(ctx, s.svcCtx)
+	return l.GetFollowerCount(in)
+}

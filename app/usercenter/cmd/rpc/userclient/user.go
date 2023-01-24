@@ -13,20 +13,29 @@ import (
 )
 
 type (
-	CheckAuthReply = user.CheckAuthReply
-	CheckAuthReq   = user.CheckAuthReq
-	LoginReply     = user.LoginReply
-	LoginReq       = user.LoginReq
-	RegisterReply  = user.RegisterReply
-	RegisterReq    = user.RegisterReq
-	UserInfoReply  = user.UserInfoReply
-	UserInfoReq    = user.UserInfoReq
+	CheckAuthReply        = user.CheckAuthReply
+	CheckAuthReq          = user.CheckAuthReq
+	CheckIsFollowReq      = user.CheckIsFollowReq
+	CheckIsFollowResp     = user.CheckIsFollowResp
+	GetFollowerCountReq   = user.GetFollowerCountReq
+	GetFollowerCountResp  = user.GetFollowerCountResp
+	GetFollowingCountReq  = user.GetFollowingCountReq
+	GetFollowingCountResp = user.GetFollowingCountResp
+	LoginReply            = user.LoginReply
+	LoginReq              = user.LoginReq
+	RegisterReply         = user.RegisterReply
+	RegisterReq           = user.RegisterReq
+	UserInfoReply         = user.UserInfoReply
+	UserInfoReq           = user.UserInfoReq
 
 	User interface {
 		GetUser(ctx context.Context, in *UserInfoReq, opts ...grpc.CallOption) (*UserInfoReply, error)
 		Login(ctx context.Context, in *LoginReq, opts ...grpc.CallOption) (*LoginReply, error)
 		Register(ctx context.Context, in *RegisterReq, opts ...grpc.CallOption) (*RegisterReply, error)
 		CheckAuth(ctx context.Context, in *CheckAuthReq, opts ...grpc.CallOption) (*CheckAuthReply, error)
+		CheckIsFollow(ctx context.Context, in *CheckIsFollowReq, opts ...grpc.CallOption) (*CheckIsFollowResp, error)
+		GetFollowingCount(ctx context.Context, in *GetFollowingCountReq, opts ...grpc.CallOption) (*GetFollowingCountResp, error)
+		GetFollowerCount(ctx context.Context, in *GetFollowerCountReq, opts ...grpc.CallOption) (*GetFollowerCountResp, error)
 	}
 
 	defaultUser struct {
@@ -58,4 +67,19 @@ func (m *defaultUser) Register(ctx context.Context, in *RegisterReq, opts ...grp
 func (m *defaultUser) CheckAuth(ctx context.Context, in *CheckAuthReq, opts ...grpc.CallOption) (*CheckAuthReply, error) {
 	client := user.NewUserClient(m.cli.Conn())
 	return client.CheckAuth(ctx, in, opts...)
+}
+
+func (m *defaultUser) CheckIsFollow(ctx context.Context, in *CheckIsFollowReq, opts ...grpc.CallOption) (*CheckIsFollowResp, error) {
+	client := user.NewUserClient(m.cli.Conn())
+	return client.CheckIsFollow(ctx, in, opts...)
+}
+
+func (m *defaultUser) GetFollowingCount(ctx context.Context, in *GetFollowingCountReq, opts ...grpc.CallOption) (*GetFollowingCountResp, error) {
+	client := user.NewUserClient(m.cli.Conn())
+	return client.GetFollowingCount(ctx, in, opts...)
+}
+
+func (m *defaultUser) GetFollowerCount(ctx context.Context, in *GetFollowerCountReq, opts ...grpc.CallOption) (*GetFollowerCountResp, error) {
+	client := user.NewUserClient(m.cli.Conn())
+	return client.GetFollowerCount(ctx, in, opts...)
 }
