@@ -26,6 +26,16 @@ type (
 		UserId int64 `form:"user_id,omitempty"`
 	}
 
+	FollowerListReq {
+		UserId int64  `form:"user_id"`
+		Token  string `form:"token"`
+	}
+
+	FollowingListReq {
+		UserId int64  `form:"user_id"`
+		Token  string `form:"token"`
+	}
+
 	UserLoginRes {
 		CommonResp
 		UserId int64  `json:"user_id,omitempty"`
@@ -41,6 +51,16 @@ type (
 	InfoRes {
 		CommonResp
 		User UserPO `json:"user"`
+	}
+
+	FollowerListResp {
+		CommonResp
+		UserList []UserPO `json:"user_list"`
+	}
+
+	FollowingListResp {
+		CommonResp
+		UserList []UserPO `json:"user_list"`
 	}
 )
 
@@ -59,4 +79,12 @@ service user-api {
 service  user-api{
 	@handler userinfo
 	get /douyin/user (InfoReq) returns (InfoRes)
+	
+	@doc "获取粉丝列表"
+	@handler followerList
+	get /douyin/relation/follower/list (FollowerListReq) returns (FollowerListResp)
+	
+	@doc "获取关注列表"
+	@handler followingList
+	get /douyin/relation/follow/list (FollowingListReq) returns (FollowingListResp)
 }

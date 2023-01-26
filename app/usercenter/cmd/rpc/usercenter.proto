@@ -4,8 +4,17 @@ package user;
 
 option go_package = "./user";
 
+message UserPO {
+  int64 FollowCount = 1; // 关注总数
+  int64 FollowerCount = 2; // 粉丝总数
+  int64 UserId = 3; // 用户id
+  bool IsFollow = 4; // true-已关注，false-未关注
+  string Name = 5; // 用户名称
+}
+
 message UserInfoReq{
-  int64 id = 1;
+  int64 query_id = 1;
+  int64 user_id = 2;
 }
 
 message UserInfoReply{
@@ -54,6 +63,7 @@ message CheckIsFollowResp{
 message GetFollowingCountReq{
   int64 user_id = 1;
 }
+
 message GetFollowingCountResp{
   int64 count = 1;
 }
@@ -61,8 +71,26 @@ message GetFollowingCountResp{
 message GetFollowerCountReq{
   int64 user_id = 1;
 }
+
 message GetFollowerCountResp{
   int64 count = 1;
+}
+
+message GetFollowerListReq{
+  int64 user_id = 1;
+  int64 query_id = 2;
+}
+
+message GetFollowerListResp{
+  repeated UserPO users = 1;
+}
+
+message GetFollowingListReq{
+  int64 user_id = 1;
+  int64 query_id = 2;
+}
+message GetFollowingListResp{
+  repeated UserPO users = 1;
 }
 
 service User {
@@ -73,4 +101,6 @@ service User {
   rpc checkIsFollow(CheckIsFollowReq) returns (CheckIsFollowResp);
   rpc getFollowingCount(GetFollowingCountReq) returns (GetFollowingCountResp);
   rpc getFollowerCount(GetFollowerCountReq) returns (GetFollowerCountResp);
+  rpc getFollowerList(GetFollowerListReq) returns (GetFollowerListResp);
+  rpc getFollowingList(GetFollowingListReq) returns (GetFollowingListResp);
 }

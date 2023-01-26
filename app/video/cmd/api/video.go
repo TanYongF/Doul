@@ -21,7 +21,6 @@ func main() {
 	server := rest.MustNewServer(c.RestConf)
 	defer server.Stop()
 
-	//// todo 循环依赖问题
 	ctx := svc.NewServiceContext(c)
 	handler.RegisterHandlers(server, ctx)
 

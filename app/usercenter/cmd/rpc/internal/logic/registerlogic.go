@@ -26,6 +26,7 @@ func NewRegisterLogic(ctx context.Context, svcCtx *svc.ServiceContext) *Register
 	}
 }
 
+//TODO 这里需要完善随机Salt
 func (l *RegisterLogic) Register(in *user.RegisterReq) (*user.RegisterReply, error) {
 	passAfterMd5 := tool.Md5(in.GetPassword())
 	dyuser, err := l.svcCtx.UserModel.FindOneByUsername(l.ctx, in.GetUsername())

@@ -12,6 +12,13 @@ import (
 var _ DyUserModel = (*customDyUserModel)(nil)
 
 type (
+	DyUserModelMasking struct {
+		UserId        int64  `db:"user_id"`        // 用户ID
+		Name          string `db:"name"`           // 用户名
+		FollowerCount int64  `db:"follower_count"` // 粉丝总数
+		IsFollow      int64  `db:"is_follow"`      // 是否已关注
+		FollowCount   int64  `db:"follow_count"`   // 关注总数
+	}
 	// DyUserModel is an interface to be customized, add more methods here,
 	// and implement the added methods in customDyUserModel.
 	DyUserModel interface {

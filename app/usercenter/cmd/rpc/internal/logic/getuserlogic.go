@@ -24,17 +24,24 @@ func NewGetUserLogic(ctx context.Context, svcCtx *svc.ServiceContext) *GetUserLo
 }
 
 func (l *GetUserLogic) GetUser(in *user.UserInfoReq) (*user.UserInfoReply, error) {
-	userFind, err := l.svcCtx.UserModel.FindOne(l.ctx, in.GetId())
+	userFind, err := l.svcCtx.UserModel.FindOne(l.ctx, in.QueryId)
 	if err != nil {
 		if errors.Is(err, sqlx.ErrNotFound) {
-			return nil, errors.Wrapf(ErrUserNoExistsError, "用户名id=%d未找到", in.Id)
+			return nil, errors.Wrapf(ErrUserNoExistsError, "用户名id=%d未找到", in.QueryId)
 		}
 		return nil, err
 	}
-	return &user.UserInfoReply{
-		Id:            userFind.UserId,
-		Name:          userFind.Name,
-		FollowCount:   userFind.FollowCount,
-		FollowerCount: userFind.FollowerCount,
-	}, nil
+
+	if isFollow, err := l.svcCtx.RelationModel.CheckFollowByFollowerAndFollowing(l.ctx, in.UserId, in.QueryId); err != nil {
+		return nil, errors.Wrapf(err, "DB error when check the relation beteween %d and %d", in.UserId, in.QueryId)
+	} else {
+		return &user.UserInfoReply{
+			Id:            userFind.UserId,
+			Name:          userFind.Name,
+			FollowCount:   userFind.FollowCount,
+			FollowerCount: userFind.FollowerCount,
+			IsFollow:      isFollow,
+		}, nil
+	}
+
 }

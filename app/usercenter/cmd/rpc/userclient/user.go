@@ -19,14 +19,19 @@ type (
 	CheckIsFollowResp     = user.CheckIsFollowResp
 	GetFollowerCountReq   = user.GetFollowerCountReq
 	GetFollowerCountResp  = user.GetFollowerCountResp
+	GetFollowerListReq    = user.GetFollowerListReq
+	GetFollowerListResp   = user.GetFollowerListResp
 	GetFollowingCountReq  = user.GetFollowingCountReq
 	GetFollowingCountResp = user.GetFollowingCountResp
+	GetFollowingListReq   = user.GetFollowingListReq
+	GetFollowingListResp  = user.GetFollowingListResp
 	LoginReply            = user.LoginReply
 	LoginReq              = user.LoginReq
 	RegisterReply         = user.RegisterReply
 	RegisterReq           = user.RegisterReq
 	UserInfoReply         = user.UserInfoReply
 	UserInfoReq           = user.UserInfoReq
+	UserPO                = user.UserPO
 
 	User interface {
 		GetUser(ctx context.Context, in *UserInfoReq, opts ...grpc.CallOption) (*UserInfoReply, error)
@@ -36,6 +41,8 @@ type (
 		CheckIsFollow(ctx context.Context, in *CheckIsFollowReq, opts ...grpc.CallOption) (*CheckIsFollowResp, error)
 		GetFollowingCount(ctx context.Context, in *GetFollowingCountReq, opts ...grpc.CallOption) (*GetFollowingCountResp, error)
 		GetFollowerCount(ctx context.Context, in *GetFollowerCountReq, opts ...grpc.CallOption) (*GetFollowerCountResp, error)
+		GetFollowerList(ctx context.Context, in *GetFollowerListReq, opts ...grpc.CallOption) (*GetFollowerListResp, error)
+		GetFollowingList(ctx context.Context, in *GetFollowingListReq, opts ...grpc.CallOption) (*GetFollowingListResp, error)
 	}
 
 	defaultUser struct {
@@ -82,4 +89,14 @@ func (m *defaultUser) GetFollowingCount(ctx context.Context, in *GetFollowingCou
 func (m *defaultUser) GetFollowerCount(ctx context.Context, in *GetFollowerCountReq, opts ...grpc.CallOption) (*GetFollowerCountResp, error) {
 	client := user.NewUserClient(m.cli.Conn())
 	return client.GetFollowerCount(ctx, in, opts...)
+}
+
+func (m *defaultUser) GetFollowerList(ctx context.Context, in *GetFollowerListReq, opts ...grpc.CallOption) (*GetFollowerListResp, error) {
+	client := user.NewUserClient(m.cli.Conn())
+	return client.GetFollowerList(ctx, in, opts...)
+}
+
+func (m *defaultUser) GetFollowingList(ctx context.Context, in *GetFollowingListReq, opts ...grpc.CallOption) (*GetFollowingListResp, error) {
+	client := user.NewUserClient(m.cli.Conn())
+	return client.GetFollowingList(ctx, in, opts...)
 }

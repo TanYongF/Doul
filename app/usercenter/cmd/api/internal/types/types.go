@@ -28,6 +28,16 @@ type InfoReq struct {
 	UserId int64 `form:"user_id,omitempty"`
 }
 
+type FollowerListReq struct {
+	UserId int64  `form:"user_id"`
+	Token  string `form:"token"`
+}
+
+type FollowingListReq struct {
+	UserId int64  `form:"user_id"`
+	Token  string `form:"token"`
+}
+
 type UserLoginRes struct {
 	CommonResp
 	UserId int64  `json:"user_id,omitempty"`
@@ -43,4 +53,14 @@ type RegisterRes struct {
 type InfoRes struct {
 	CommonResp
 	User UserPO `json:"user"`
+}
+
+type FollowerListResp struct {
+	CommonResp
+	UserList []UserPO `json:"user_list"`
+}
+
+type FollowingListResp struct {
+	CommonResp
+	UserList []UserPO `json:"user_list"`
 }

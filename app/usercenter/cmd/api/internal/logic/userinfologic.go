@@ -2,8 +2,8 @@ package logic
 
 import (
 	"context"
-	"github.com/jinzhu/copier"
 	"go_code/Doul/app/usercenter/cmd/rpc/user"
+	"go_code/Doul/common"
 
 	"go_code/Doul/app/usercenter/cmd/api/internal/svc"
 	"go_code/Doul/app/usercenter/cmd/api/internal/types"
@@ -28,29 +28,26 @@ func NewUserinfoLogic(ctx context.Context, svcCtx *svc.ServiceContext) *Userinfo
 func (l *UserinfoLogic) Userinfo(req *types.InfoReq) (resp *types.InfoRes, err error) {
 
 	//Get the current user_id from context
-	authId := l.ctx.Value("user_id").(int64)
+	authId := common.GetUidFromCtx(l.ctx)
 
 	// 1. Get the user information body
 	userReply, err := l.svcCtx.UserRpc.GetUser(l.ctx, &user.UserInfoReq{
-		Id: req.UserId,
-	})
-	if err != nil {
-		return nil, err
-	}
-	// 2. Get the follow-relation between A and B
-	isFollow, err := l.svcCtx.UserRpc.CheckIsFollow(l.ctx, &user.CheckIsFollowReq{
-		FollowerId:  userReply.Id,
-		FollowingId: authId,
+		QueryId: req.UserId,
+		UserId:  authId,
 	})
 	if err != nil {
 		return nil, err
 	}
 
-	// 3. Build the resp body by copying information
-	user := types.UserPO{}
-	copier.Copy(&user, &userReply)
-	user.IsFollow = isFollow.GetIsFollow()
+	// 2. Build the resp body by copying information
+	userPo := types.UserPO{}
+	userPo.Name = userReply.Name
+	userPo.IsFollow = userReply.IsFollow
+	userPo.FollowCount = userReply.FollowCount
+	userPo.FollowerCount = userReply.FollowerCount
+	userPo.ID = userReply.Id
+
 	return &types.InfoRes{
-		User: user,
+		User: userPo,
 	}, err
 }

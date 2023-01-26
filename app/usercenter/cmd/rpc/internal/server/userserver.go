@@ -56,3 +56,13 @@ func (s *UserServer) GetFollowerCount(ctx context.Context, in *user.GetFollowerC
 	l := logic.NewGetFollowerCountLogic(ctx, s.svcCtx)
 	return l.GetFollowerCount(in)
 }
+
+func (s *UserServer) GetFollowerList(ctx context.Context, in *user.GetFollowerListReq) (*user.GetFollowerListResp, error) {
+	l := logic.NewGetFollowerListLogic(ctx, s.svcCtx)
+	return l.GetFollowerList(in)
+}
+
+func (s *UserServer) GetFollowingList(ctx context.Context, in *user.GetFollowingListReq) (*user.GetFollowingListResp, error) {
+	l := logic.NewGetFollowingListLogic(ctx, s.svcCtx)
+	return l.GetFollowingList(in)
+}
