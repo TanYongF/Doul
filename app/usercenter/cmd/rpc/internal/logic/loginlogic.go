@@ -5,6 +5,7 @@ import (
 	"encoding/json"
 	"github.com/pkg/errors"
 	"github.com/zeromicro/go-zero/core/logx"
+	"github.com/zeromicro/go-zero/core/stores/sqlx"
 	"go_code/Doul/app/usercenter/cmd/rpc/internal/svc"
 	"go_code/Doul/app/usercenter/cmd/rpc/user"
 	"go_code/Doul/app/usercenter/model"
@@ -59,12 +60,14 @@ func (l *LoginLogic) Login(in *user.LoginReq) (*user.LoginReply, error) {
 func (l *LoginLogic) checkUser(username string, password string) (dbUser *model.DyUser, err error) {
 	dbUser, err = l.svcCtx.UserModel.FindOneByUsername(l.ctx, username)
 	//if has error
+
 	if err != nil {
-		return nil, errors.Wrapf(xerr.NewErrCode(xerr.DB_ERROR), "根据用户名称查询用户信息失败，mobile:%s,err:%v", username, err)
-	}
-	//the user not exists
-	if dbUser == nil {
-		return nil, errors.Wrapf(ErrUserNoExistsError, "username: %s", username)
+		switch err {
+		case sqlx.ErrNotFound:
+			return nil, errors.Wrapf(xerr.NewErrCode(xerr.NO_SUCH_USER), "无此用户")
+		default:
+			return nil, errors.Wrapf(xerr.NewErrCode(xerr.DB_ERROR), "根据用户名称查询用户信息失败，mobile:%s,err:%v", username, err)
+		}
 	}
 	//验证密码
 	formPass := tool.Md5(password)

@@ -11,24 +11,24 @@ import (
 	"github.com/zeromicro/go-zero/core/logx"
 )
 
-type PublishListLogic struct {
+type FavoriteListLogic struct {
 	logx.Logger
 	ctx    context.Context
 	svcCtx *svc.ServiceContext
 }
 
-func NewPublishListLogic(ctx context.Context, svcCtx *svc.ServiceContext) *PublishListLogic {
-	return &PublishListLogic{
+func NewFavoriteListLogic(ctx context.Context, svcCtx *svc.ServiceContext) *FavoriteListLogic {
+	return &FavoriteListLogic{
 		Logger: logx.WithContext(ctx),
 		ctx:    ctx,
 		svcCtx: svcCtx,
 	}
 }
 
-func (l *PublishListLogic) PublishList(req *types.PublishListReq) (resp *types.PublishListResp, err error) {
+func (l *FavoriteListLogic) FavoriteList(req *types.FavoriteVideofListReq) (resp *types.FavoriteVideoListResp, err error) {
 	// todo: add your logic here and delete this line
 	queryId, _ := strconv.ParseInt(req.UserId, 10, 64)
-	favoriteList, err := l.svcCtx.VideoRpc.PublishList(l.ctx, &videoclient.PublishListReq{
+	favoriteList, err := l.svcCtx.VideoRpc.FavoriteList(l.ctx, &videoclient.FavoriteListReq{
 		QueryId: queryId,
 	})
 	if err != nil {
@@ -57,7 +57,7 @@ func (l *PublishListLogic) PublishList(req *types.PublishListReq) (resp *types.P
 		}
 		videos = append(videos, vo)
 	}
-	return &types.PublishListResp{
+	return &types.FavoriteVideoListResp{
 		VideoList: videos,
 	}, nil
 }

@@ -6,7 +6,7 @@ import (
 	"go_code/Doul/app/usercenter/cmd/api/internal/svc"
 	"go_code/Doul/app/usercenter/cmd/api/internal/types"
 	"go_code/Doul/app/usercenter/cmd/rpc/userclient"
-	"go_code/Doul/common"
+	"go_code/Doul/common/tool"
 
 	"github.com/zeromicro/go-zero/core/logx"
 )
@@ -28,7 +28,7 @@ func NewFollowingListLogic(ctx context.Context, svcCtx *svc.ServiceContext) *Fol
 func (l *FollowingListLogic) FollowingList(req *types.FollowingListReq) (resp *types.FollowingListResp, err error) {
 	followingListByDB, err := l.svcCtx.UserRpc.GetFollowingList(l.ctx, &userclient.GetFollowingListReq{
 		QueryId: req.UserId,
-		UserId:  common.GetUidFromCtx(l.ctx),
+		UserId:  tool.GetUidFromCtx(l.ctx),
 	})
 	if err != nil {
 		return nil, err

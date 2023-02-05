@@ -13,16 +13,19 @@ import (
 )
 
 type (
-	CommentBody     = comment.CommentBody
-	CommentListReq  = comment.CommentListReq
-	CommentListResp = comment.CommentListResp
-	PutCommentReq   = comment.PutCommentReq
-	PutCommentResp  = comment.PutCommentResp
-	User            = comment.User
+	CommentBody       = comment.CommentBody
+	CommentListReq    = comment.CommentListReq
+	CommentListResp   = comment.CommentListResp
+	DeleteCommentReq  = comment.DeleteCommentReq
+	DeleteCommentResp = comment.DeleteCommentResp
+	PutCommentReq     = comment.PutCommentReq
+	PutCommentResp    = comment.PutCommentResp
+	User              = comment.User
 
 	Comment interface {
 		GetCommentList(ctx context.Context, in *CommentListReq, opts ...grpc.CallOption) (*CommentListResp, error)
-		PutComment(ctx context.Context, in *PutCommentReq, opts ...grpc.CallOption) (*PutCommentResp, error)
+		CreateComment(ctx context.Context, in *PutCommentReq, opts ...grpc.CallOption) (*PutCommentResp, error)
+		DeleteComment(ctx context.Context, in *DeleteCommentReq, opts ...grpc.CallOption) (*DeleteCommentResp, error)
 	}
 
 	defaultComment struct {
@@ -41,7 +44,12 @@ func (m *defaultComment) GetCommentList(ctx context.Context, in *CommentListReq,
 	return client.GetCommentList(ctx, in, opts...)
 }
 
-func (m *defaultComment) PutComment(ctx context.Context, in *PutCommentReq, opts ...grpc.CallOption) (*PutCommentResp, error) {
+func (m *defaultComment) CreateComment(ctx context.Context, in *PutCommentReq, opts ...grpc.CallOption) (*PutCommentResp, error) {
 	client := comment.NewCommentClient(m.cli.Conn())
-	return client.PutComment(ctx, in, opts...)
+	return client.CreateComment(ctx, in, opts...)
+}
+
+func (m *defaultComment) DeleteComment(ctx context.Context, in *DeleteCommentReq, opts ...grpc.CallOption) (*DeleteCommentResp, error) {
+	client := comment.NewCommentClient(m.cli.Conn())
+	return client.DeleteComment(ctx, in, opts...)
 }

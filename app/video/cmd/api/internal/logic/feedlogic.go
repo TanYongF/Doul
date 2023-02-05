@@ -35,7 +35,7 @@ func (l *FeedLogic) Feed(req *types.FeedReq) (resp *types.FeedResp, err error) {
 	}
 	videos := make([]types.Video, len(feeds.VideoList))
 
-	for i := 1; i < len(feeds.VideoList); i++ {
+	for i := 0; i < len(feeds.VideoList); i++ {
 		copier.Copy(&videos[i], &feeds.VideoList[i])
 		copier.Copy(&videos[i].Author, &feeds.VideoList[i].Author)
 	}

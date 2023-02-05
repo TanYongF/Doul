@@ -6,7 +6,7 @@ import (
 	"go_code/Doul/app/usercenter/cmd/api/internal/svc"
 	"go_code/Doul/app/usercenter/cmd/api/internal/types"
 	"go_code/Doul/app/usercenter/cmd/rpc/userclient"
-	"go_code/Doul/common"
+	"go_code/Doul/common/tool"
 
 	"github.com/zeromicro/go-zero/core/logx"
 )
@@ -27,7 +27,7 @@ func NewFollowerListLogic(ctx context.Context, svcCtx *svc.ServiceContext) *Foll
 
 func (l *FollowerListLogic) FollowerList(req *types.FollowerListReq) (resp *types.FollowerListResp, err error) {
 	FollowerList, err := l.svcCtx.UserRpc.GetFollowerList(l.ctx, &userclient.GetFollowerListReq{
-		UserId:  common.GetUidFromCtx(l.ctx),
+		UserId:  tool.GetUidFromCtx(l.ctx),
 		QueryId: req.UserId,
 	})
 	if err != nil {

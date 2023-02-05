@@ -61,6 +61,15 @@ type publishListResp {
 	VideoList []Video `json:"video_list"` // 用户发布的视频列表
 }
 
+type favoriteVideofListReq {
+	UserId string `form:"user_id"`
+}
+
+type favoriteVideoListResp {
+	CommonResp
+	VideoList []Video `json:"video_list"` // 用户喜欢的视频列表
+}
+
 service video-api {
 	@handler feed
 	get /douyin/feed (feedReq) returns (feedResp)
@@ -77,5 +86,9 @@ service video-api{
 	@doc "get the publish list"
 	@handler publishList
 	get /douyin/publish/list (publishListReq) returns (publishListResp)
+	
+	@doc "get the favorite video list"
+	@handler favoriteList
+	get /douyin/favorite/list (favoriteVideofListReq) returns (favoriteVideoListResp)
 	
 }

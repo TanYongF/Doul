@@ -51,3 +51,12 @@ type PublishListResp struct {
 	CommonResp
 	VideoList []Video `json:"video_list"` // 用户发布的视频列表
 }
+
+type FavoriteVideofListReq struct {
+	UserId string `form:"user_id"`
+}
+
+type FavoriteVideoListResp struct {
+	CommonResp
+	VideoList []Video `json:"video_list"` // 用户喜欢的视频列表
+}

@@ -55,6 +55,9 @@ func (m *AuthMiddleware) Handle(next http.HandlerFunc) http.HandlerFunc {
 			logx.Infof("user %s has not authed", r.FormValue("token"))
 			return
 		}
+		//md := metadata.New(map[string]string{"username": "zhangsan"})
+		//ctx := metadata.NewOutgoingContext(r.Context(), md)
+		//next(w, r.WithContext(ctx))
 		next(w, r.WithContext(context.WithValue(r.Context(), "auth_id", auth.AuthedId)))
 	}
 }

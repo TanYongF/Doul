@@ -27,7 +27,12 @@ func (s *CommentServer) GetCommentList(ctx context.Context, in *comment.CommentL
 	return l.GetCommentList(in)
 }
 
-func (s *CommentServer) PutComment(ctx context.Context, in *comment.PutCommentReq) (*comment.PutCommentResp, error) {
-	l := logic.NewPutCommentLogic(ctx, s.svcCtx)
-	return l.PutComment(in)
+func (s *CommentServer) CreateComment(ctx context.Context, in *comment.PutCommentReq) (*comment.PutCommentResp, error) {
+	l := logic.NewCreateCommentLogic(ctx, s.svcCtx)
+	return l.CreateComment(in)
+}
+
+func (s *CommentServer) DeleteComment(ctx context.Context, in *comment.DeleteCommentReq) (*comment.DeleteCommentResp, error) {
+	l := logic.NewDeleteCommentLogic(ctx, s.svcCtx)
+	return l.DeleteComment(in)
 }

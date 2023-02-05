@@ -31,8 +31,8 @@ type User {
 }
 
 type CommentListResp {
-	CommentList []Comment `json:"comment_list"` // 评论列表
 	CommonResp
+	CommentList []Comment `json:"comment_list"` // 评论列表
 }
 type CommentActionResp {
 	CommonResp

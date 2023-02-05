@@ -16,6 +16,7 @@ type CommentActionLogic struct {
 }
 
 func NewCommentActionLogic(ctx context.Context, svcCtx *svc.ServiceContext) *CommentActionLogic {
+
 	return &CommentActionLogic{
 		Logger: logx.WithContext(ctx),
 		ctx:    ctx,

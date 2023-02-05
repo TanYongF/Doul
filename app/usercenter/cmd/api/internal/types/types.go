@@ -14,34 +14,13 @@ type UserPO struct {
 	Name          string `json:"name"`
 }
 
-type LoginReq struct {
-	Username string `form:"username"`
-	Password string `form:"password"`
-}
-
-type RegisterReq struct {
-	Username string `form:"username"`
-	Password string `form:"password"`
-}
-
 type InfoReq struct {
 	UserId int64 `form:"user_id,omitempty"`
 }
 
-type FollowerListReq struct {
-	UserId int64  `form:"user_id"`
-	Token  string `form:"token"`
-}
-
-type FollowingListReq struct {
-	UserId int64  `form:"user_id"`
-	Token  string `form:"token"`
-}
-
-type UserLoginRes struct {
+type InfoRes struct {
 	CommonResp
-	UserId int64  `json:"user_id,omitempty"`
-	Token  string `json:"token"`
+	User UserPO `json:"user"`
 }
 
 type RegisterRes struct {
@@ -50,9 +29,9 @@ type RegisterRes struct {
 	Token  string `json:"token"`
 }
 
-type InfoRes struct {
-	CommonResp
-	User UserPO `json:"user"`
+type RegisterReq struct {
+	Username string `form:"username"`
+	Password string `form:"password"`
 }
 
 type FollowerListResp struct {
@@ -60,7 +39,28 @@ type FollowerListResp struct {
 	UserList []UserPO `json:"user_list"`
 }
 
+type FollowerListReq struct {
+	UserId int64  `form:"user_id"`
+	Token  string `form:"token"`
+}
+
 type FollowingListResp struct {
 	CommonResp
 	UserList []UserPO `json:"user_list"`
+}
+
+type FollowingListReq struct {
+	UserId int64  `form:"user_id"`
+	Token  string `form:"token"`
+}
+
+type LoginReq struct {
+	Username string `form:"username"`
+	Password string `form:"password"`
+}
+
+type UserLoginRes struct {
+	CommonResp
+	UserId int64  `json:"user_id,omitempty"`
+	Token  string `json:"token"`
 }

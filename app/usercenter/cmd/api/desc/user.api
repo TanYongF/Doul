@@ -1,0 +1,37 @@
+syntax = "v1"
+info(
+	title: "用户中心服务"
+	desc: "用户中心服务"
+	author: "tyf"
+	email: "tan13621251388@gmail.com"
+	version: "v1"
+)
+
+import (
+	"user/user.api"
+)
+//============================> usercenter v1 <============================
+service user-api {
+	@handler login
+	post /douyin/user/login (LoginReq) returns (UserLoginRes)
+	
+	@handler register
+	post /douyin/user/register (RegisterReq) returns (RegisterRes)
+	
+}
+
+@server (
+	middleware : AuthMiddleware
+)
+service  user-api{
+	@handler userinfo
+	get /douyin/user (InfoReq) returns (InfoRes)
+	
+	@doc "获取粉丝列表"
+	@handler followerList
+	get /douyin/relation/follower/list (FollowerListReq) returns (FollowerListResp)
+	
+	@doc "获取关注列表"
+	@handler followingList
+	get /douyin/relation/follow/list (FollowingListReq) returns (FollowingListResp)
+}

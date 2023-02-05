@@ -2,11 +2,12 @@ package logic
 
 import (
 	"context"
-	"go_code/Doul/app/usercenter/cmd/rpc/user"
-	"go_code/Doul/common"
-
+	"fmt"
 	"go_code/Doul/app/usercenter/cmd/api/internal/svc"
 	"go_code/Doul/app/usercenter/cmd/api/internal/types"
+	"go_code/Doul/app/usercenter/cmd/rpc/user"
+	"go_code/Doul/common/tool"
+	"google.golang.org/grpc/metadata"
 
 	"github.com/zeromicro/go-zero/core/logx"
 )
@@ -28,10 +29,13 @@ func NewUserinfoLogic(ctx context.Context, svcCtx *svc.ServiceContext) *Userinfo
 func (l *UserinfoLogic) Userinfo(req *types.InfoReq) (resp *types.InfoRes, err error) {
 
 	//Get the current user_id from context
-	authId := common.GetUidFromCtx(l.ctx)
-
+	authId := tool.GetUidFromCtx(l.ctx)
+	if md, ok := metadata.FromIncomingContext(l.ctx); ok {
+		get := md.Get("username")
+		fmt.Println(get)
+	}
 	// 1. Get the user information body
-	userReply, err := l.svcCtx.UserRpc.GetUser(l.ctx, &user.UserInfoReq{
+	userReply, err := l.svcCtx.UserRpc.GetUser(context.WithValue(l.ctx, "auth_id", authId), &user.UserInfoReq{
 		QueryId: req.UserId,
 		UserId:  authId,
 	})

@@ -12,9 +12,9 @@ import (
 
 var (
 	_                            DyRelationModel = (*customDyRelationModel)(nil)
-	cacheFollowerCountPrefix                     = "cache:dyRelation:followerCount:"
-	cacheFollowingCountPrefix                    = "cache:dyRelation:followingCount:"
-	cacheRelationPrefix                          = "cache:dyRelation:"
+	cacheFollowerCountPrefix                     = "cache:douyin:dyRelation:followerCount:"
+	cacheFollowingCountPrefix                    = "cache:douyin:dyRelation:followingCount:"
+	cacheRelationPrefix                          = "cache:douyin:dyRelation:"
 	cacheRelationFollowingSuffix                 = ":subscribe"
 	cacheRelationFansSuffix                      = ":fans"
 )
@@ -101,6 +101,7 @@ func (c customDyRelationModel) CheckFollowByFollowerAndFollowing(ctx context.Con
 
 	key := cacheRelationPrefix + strconv.FormatInt(followerId, 10) + cacheRelationFollowingSuffix
 	exists, _ := c.rdc.Exists(key)
+	logx.Error(key)
 	if exists {
 		isFollow, _ = c.rdc.Sismember(key, followingId)
 	} else {

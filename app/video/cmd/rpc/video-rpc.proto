@@ -34,7 +34,7 @@ message FeedResp {
 }
 
 message publishListReq{
-  string user_id = 1;
+   int64  QueryId = 1;
 }
 
 message publishListResp{
@@ -42,7 +42,7 @@ message publishListResp{
 }
 
 message favoriteListReq{
-  string user_id = 1;
+  int64 QueryId = 1;
 }
 message favoriteListResp{
   repeated VideoPO VideoList = 1; // 视频列表
