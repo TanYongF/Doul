@@ -20,13 +20,12 @@ func NewAuthMiddleware(userClient userclient.User) *AuthMiddleware {
 	}
 }
 
-//
 // Handle
-//  @Description: 鉴权中间件方法
-//  @receiver m 鉴权中间件
-//  @param next
-//  @return http.HandlerFunc
 //
+//	@Description: 鉴权中间件方法
+//	@receiver m 鉴权中间件
+//	@param next
+//	@return http.HandlerFunc
 func (m *AuthMiddleware) Handle(next http.HandlerFunc) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		//Get token from query or form-data
@@ -55,6 +54,7 @@ func (m *AuthMiddleware) Handle(next http.HandlerFunc) http.HandlerFunc {
 			logx.Infof("user %s has not authed", r.FormValue("token"))
 			return
 		}
+
 		//md := metadata.New(map[string]string{"username": "zhangsan"})
 		//ctx := metadata.NewOutgoingContext(r.Context(), md)
 		//next(w, r.WithContext(ctx))

@@ -6,7 +6,7 @@ import (
 	"context"
 	"database/sql"
 	"fmt"
-
+	"go_code/Doul"
 	"strings"
 
 	"github.com/zeromicro/go-zero/core/stores/builder"
@@ -22,13 +22,15 @@ var (
 	dyRelationRowsExpectAutoSet   = strings.Join(stringx.Remove(dyRelationFieldNames, "`relation_id`", "`create_at`", "`create_time`", "`created_at`", "`update_at`", "`update_time`", "`updated_at`"), ",")
 	dyRelationRowsWithPlaceHolder = strings.Join(stringx.Remove(dyRelationFieldNames, "`relation_id`", "`create_at`", "`create_time`", "`created_at`", "`update_at`", "`update_time`", "`updated_at`"), "=?,") + "=?"
 
-	cacheDyRelationRelationIdPrefix = "cache:dyRelation:relationId:"
+	cacheDyRelationRelationIdPrefix            = "cache:dyRelation:relationId:"
+	cacheDyRelationFollowerIdFollowingIdPrefix = "cache:dyRelation:followerId:followingId:"
 )
 
 type (
 	dyRelationModel interface {
 		Insert(ctx context.Context, data *DyRelation) (sql.Result, error)
 		FindOne(ctx context.Context, relationId int64) (*DyRelation, error)
+		FindOneByFollowerIdFollowingId(ctx context.Context, followerId int64, followingId int64) (*DyRelation, error)
 		Update(ctx context.Context, data *DyRelation) error
 		Delete(ctx context.Context, relationId int64) error
 	}
@@ -40,9 +42,9 @@ type (
 
 	DyRelation struct {
 		RelationId  int64 `db:"relation_id"`  // 关系ID
-		FollowerId  int64 `db:"follower_id"`  // 博主ID
-		FollowingId int64 `db:"following_id"` // 粉丝ID
-		IsDel       int64 `db:"is_del"`       // 是否删除
+		FollowerId  int64 `db:"follower_id"`  // 粉丝ID
+		FollowingId int64 `db:"following_id"` // 博主ID
+		IsDel       byte  `db:"is_del"`       // 是否删除
 	}
 )
 
@@ -54,11 +56,17 @@ func newDyRelationModel(conn sqlx.SqlConn, c cache.CacheConf) *defaultDyRelation
 }
 
 func (m *defaultDyRelationModel) Delete(ctx context.Context, relationId int64) error {
+	data, err := m.FindOne(ctx, relationId)
+	if err != nil {
+		return err
+	}
+
+	dyRelationFollowerIdFollowingIdKey := fmt.Sprintf("%s%v:%v", cacheDyRelationFollowerIdFollowingIdPrefix, data.FollowerId, data.FollowingId)
 	dyRelationRelationIdKey := fmt.Sprintf("%s%v", cacheDyRelationRelationIdPrefix, relationId)
-	_, err := m.ExecCtx(ctx, func(ctx context.Context, conn sqlx.SqlConn) (result sql.Result, err error) {
+	_, err = m.ExecCtx(ctx, func(ctx context.Context, conn sqlx.SqlConn) (result sql.Result, err error) {
 		query := fmt.Sprintf("delete from %s where `relation_id` = ?", m.table)
 		return conn.ExecCtx(ctx, query, relationId)
-	}, dyRelationRelationIdKey)
+	}, dyRelationFollowerIdFollowingIdKey, dyRelationRelationIdKey)
 	return err
 }
 
@@ -73,27 +81,54 @@ func (m *defaultDyRelationModel) FindOne(ctx context.Context, relationId int64) 
 	case nil:
 		return &resp, nil
 	case sqlc.ErrNotFound:
-		return nil, ErrNotFound
+		return nil, Doul.ErrNotFound
+	default:
+		return nil, err
+	}
+}
+
+func (m *defaultDyRelationModel) FindOneByFollowerIdFollowingId(ctx context.Context, followerId int64, followingId int64) (*DyRelation, error) {
+	dyRelationFollowerIdFollowingIdKey := fmt.Sprintf("%s%v:%v", cacheDyRelationFollowerIdFollowingIdPrefix, followerId, followingId)
+	var resp DyRelation
+	err := m.QueryRowIndexCtx(ctx, &resp, dyRelationFollowerIdFollowingIdKey, m.formatPrimary, func(ctx context.Context, conn sqlx.SqlConn, v interface{}) (i interface{}, e error) {
+		query := fmt.Sprintf("select %s from %s where `follower_id` = ? and `following_id` = ? limit 1", dyRelationRows, m.table)
+		if err := conn.QueryRowCtx(ctx, &resp, query, followerId, followingId); err != nil {
+			return nil, err
+		}
+		return resp.RelationId, nil
+	}, m.queryPrimary)
+	switch err {
+	case nil:
+		return &resp, nil
+	case sqlc.ErrNotFound:
+		return nil, Doul.ErrNotFound
 	default:
 		return nil, err
 	}
 }
 
 func (m *defaultDyRelationModel) Insert(ctx context.Context, data *DyRelation) (sql.Result, error) {
+	dyRelationFollowerIdFollowingIdKey := fmt.Sprintf("%s%v:%v", cacheDyRelationFollowerIdFollowingIdPrefix, data.FollowerId, data.FollowingId)
 	dyRelationRelationIdKey := fmt.Sprintf("%s%v", cacheDyRelationRelationIdPrefix, data.RelationId)
 	ret, err := m.ExecCtx(ctx, func(ctx context.Context, conn sqlx.SqlConn) (result sql.Result, err error) {
 		query := fmt.Sprintf("insert into %s (%s) values (?, ?, ?)", m.table, dyRelationRowsExpectAutoSet)
 		return conn.ExecCtx(ctx, query, data.FollowerId, data.FollowingId, data.IsDel)
-	}, dyRelationRelationIdKey)
+	}, dyRelationFollowerIdFollowingIdKey, dyRelationRelationIdKey)
 	return ret, err
 }
 
-func (m *defaultDyRelationModel) Update(ctx context.Context, data *DyRelation) error {
+func (m *defaultDyRelationModel) Update(ctx context.Context, newData *DyRelation) error {
+	data, err := m.FindOne(ctx, newData.RelationId)
+	if err != nil {
+		return err
+	}
+
+	dyRelationFollowerIdFollowingIdKey := fmt.Sprintf("%s%v:%v", cacheDyRelationFollowerIdFollowingIdPrefix, data.FollowerId, data.FollowingId)
 	dyRelationRelationIdKey := fmt.Sprintf("%s%v", cacheDyRelationRelationIdPrefix, data.RelationId)
-	_, err := m.ExecCtx(ctx, func(ctx context.Context, conn sqlx.SqlConn) (result sql.Result, err error) {
+	_, err = m.ExecCtx(ctx, func(ctx context.Context, conn sqlx.SqlConn) (result sql.Result, err error) {
 		query := fmt.Sprintf("update %s set %s where `relation_id` = ?", m.table, dyRelationRowsWithPlaceHolder)
-		return conn.ExecCtx(ctx, query, data.FollowerId, data.FollowingId, data.IsDel, data.RelationId)
-	}, dyRelationRelationIdKey)
+		return conn.ExecCtx(ctx, query, newData.FollowerId, newData.FollowingId, newData.IsDel, newData.RelationId)
+	}, dyRelationFollowerIdFollowingIdKey, dyRelationRelationIdKey)
 	return err
 }
 

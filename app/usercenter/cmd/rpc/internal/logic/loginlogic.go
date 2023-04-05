@@ -2,7 +2,6 @@ package logic
 
 import (
 	"context"
-	"encoding/json"
 	"github.com/pkg/errors"
 	"github.com/zeromicro/go-zero/core/logx"
 	"github.com/zeromicro/go-zero/core/stores/sqlx"
@@ -12,6 +11,7 @@ import (
 	"go_code/Doul/common/globalkey"
 	"go_code/Doul/common/tool"
 	"go_code/Doul/common/xerr"
+	"strconv"
 	"strings"
 )
 
@@ -41,15 +41,13 @@ func (l *LoginLogic) Login(in *user.LoginReq) (*user.LoginReply, error) {
 
 	//Generate token and user detail json
 	token := tool.TokenGenerator()
-	userJson, _ := json.Marshal(*dyuser)
 
 	//将token加入redis中，过期时间是24小时, 键是token, 值是用户对象
-	err = l.svcCtx.RedisClient.SetexCtx(l.ctx, globalkey.TokenPrefix+token, string(userJson), int(globalkey.TokenExpireTime.Seconds()))
+	val := strconv.FormatInt(dyuser.UserId, 10) + ":" + dyuser.Name
+	err = l.svcCtx.RedisClient.SetexCtx(l.ctx, globalkey.GetUserByToken(token), val, int(globalkey.TokenExpireTime.Seconds()))
 	if err != nil {
 		return nil, errors.Wrapf(xerr.NewErrCode(xerr.CACHE_ERROR), "cache wrong when insert token")
 	}
-
-	logx.Infof("用户%s 登陆成功，生成的token： %s", in.GetUsername(), token)
 
 	return &user.LoginReply{
 		UserId: dyuser.UserId,
@@ -71,7 +69,6 @@ func (l *LoginLogic) checkUser(username string, password string) (dbUser *model.
 	}
 	//验证密码
 	formPass := tool.Md5(password)
-	logx.Infof("dbUser.Password : %s, formPass: %s", dbUser.Password, formPass)
 	if strings.Compare(dbUser.Password, formPass) != 0 {
 		return nil, errors.Wrap(ErrUsernamePwdError, "密码匹配出错")
 	}

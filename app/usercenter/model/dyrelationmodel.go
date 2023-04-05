@@ -3,10 +3,10 @@ package model
 import (
 	"context"
 	"fmt"
-	"github.com/zeromicro/go-zero/core/logx"
 	"github.com/zeromicro/go-zero/core/stores/cache"
 	"github.com/zeromicro/go-zero/core/stores/redis"
 	"github.com/zeromicro/go-zero/core/stores/sqlx"
+
 	"strconv"
 )
 
@@ -14,9 +14,9 @@ var (
 	_                            DyRelationModel = (*customDyRelationModel)(nil)
 	cacheFollowerCountPrefix                     = "cache:douyin:dyRelation:followerCount:"
 	cacheFollowingCountPrefix                    = "cache:douyin:dyRelation:followingCount:"
-	cacheRelationPrefix                          = "cache:douyin:dyRelation:"
-	cacheRelationFollowingSuffix                 = ":subscribe"
-	cacheRelationFansSuffix                      = ":fans"
+	cacheRelationSubscribePrefix                 = "cache:douyin:dyRelation:subscribe:"
+
+	cacheRelationFansSuffix = ":fans"
 )
 
 type (
@@ -29,6 +29,7 @@ type (
 		CountFollowingsByUserId(ctx context.Context, userId int64) (*int64, error)
 		GetFollowerList(ctx context.Context, userId int64) ([]DyUser, error)
 		GetFollowingList(ctx context.Context, userId int64) ([]DyUser, error)
+		UpInsert(ctx context.Context, m *DyRelation) interface{}
 	}
 
 	customDyRelationModel struct {
@@ -36,6 +37,15 @@ type (
 		rdc *redis.Redis
 	}
 )
+
+func (c customDyRelationModel) UpInsert(ctx context.Context, data *DyRelation) interface{} {
+	query := fmt.Sprintf("insert into %s (%s) values (?, ?, ?) on duplicate key update `is_del` = ?", c.table, dyRelationRowsExpectAutoSet)
+	_, err := c.ExecNoCacheCtx(ctx, query, data.FollowerId, data.FollowingId, data.IsDel, data.IsDel)
+	if err != nil {
+		return err
+	}
+	return nil
+}
 
 // GetFollowerList 获取粉丝列表
 func (c customDyRelationModel) GetFollowerList(ctx context.Context, userId int64) ([]DyUser, error) {
@@ -57,7 +67,6 @@ func (c customDyRelationModel) GetFollowingList(ctx context.Context, userId int6
 	query := fmt.Sprintf("select * from dy_user du where du.user_id  in (select dr.following_id from dy_relation dr where dr.follower_id = ?)")
 	var followings []DyUser
 	err := c.QueryRowsNoCacheCtx(ctx, &followings, query, userId)
-	logx.Info(followings)
 	switch err {
 	case sqlx.ErrNotFound:
 		return nil, ErrNotFound
@@ -99,9 +108,12 @@ func (c customDyRelationModel) CountFollowingsByUserId(ctx context.Context, user
 func (c customDyRelationModel) CheckFollowByFollowerAndFollowing(ctx context.Context, followerId int64, followingId int64) (bool, error) {
 	var isFollow bool
 
-	key := cacheRelationPrefix + strconv.FormatInt(followerId, 10) + cacheRelationFollowingSuffix
+	//如果userId为-1， 证明请求未登录，直接返回 false
+	if followingId == -1 {
+		return false, nil
+	}
+	key := cacheRelationSubscribePrefix + strconv.FormatInt(followerId, 10)
 	exists, _ := c.rdc.Exists(key)
-	logx.Error(key)
 	if exists {
 		isFollow, _ = c.rdc.Sismember(key, followingId)
 	} else {

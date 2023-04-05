@@ -26,6 +26,7 @@ type User struct {
 }
 
 type FeedReq struct {
+	Token       string `form:"token,optional"`
 	LastestTime string `form:"latest_time"`
 }
 
@@ -59,4 +60,13 @@ type FavoriteVideofListReq struct {
 type FavoriteVideoListResp struct {
 	CommonResp
 	VideoList []Video `json:"video_list"` // 用户喜欢的视频列表
+}
+
+type FavoriteReq struct {
+	VideoId    int64 `form:"video_id"`
+	ActionType int8  `form:"action_type"`
+}
+
+type FavoriteResp struct {
+	CommonResp
 }

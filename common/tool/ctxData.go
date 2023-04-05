@@ -11,6 +11,7 @@ var (
 // GetUidFromCtx 通过 context 获取用户ID
 func GetUidFromCtx(ctx context.Context) int64 {
 	var int64Uid int64
+	int64Uid = -1
 	if uid, ok := ctx.Value(CtxKeyUserid).(int64); ok {
 		int64Uid = uid
 	} else if uid, ok := ctx.Value(CtxKeyUserid).(int); ok {

@@ -2,15 +2,14 @@ package logic
 
 import (
 	"context"
-	"encoding/json"
 	"github.com/pkg/errors"
 	"go_code/Doul/app/usercenter/cmd/rpc/user"
 	"go_code/Doul/common/globalkey"
+	"strconv"
+	"strings"
 
 	"github.com/zeromicro/go-zero/core/stringx"
 	"go_code/Doul/app/usercenter/cmd/rpc/internal/svc"
-
-	"go_code/Doul/app/usercenter/model"
 
 	"go_code/Doul/common/xerr"
 
@@ -33,24 +32,37 @@ func NewCheckAuthLogic(ctx context.Context, svcCtx *svc.ServiceContext) *CheckAu
 
 // CheckAuth check the user has authed
 func (l *CheckAuthLogic) CheckAuth(in *user.CheckAuthReq) (*user.CheckAuthReply, error) {
-	userJSON, err := l.svcCtx.RedisClient.Get(globalkey.TokenPrefix + in.GetToken())
-	var dyUser model.DyUser
+	value, err := l.svcCtx.RedisClient.Get(globalkey.GetUserByToken(in.Token))
 	isAuthed := false
+	var userId int64
+
 	if err != nil {
 		return nil, errors.Wrapf(xerr.NewErrCode(xerr.CACHE_ERROR), "failed to access redis when get user's information")
 	}
-	if stringx.NotEmpty(userJSON) {
-		err := json.Unmarshal([]byte(userJSON), &dyUser)
-		if err != nil {
-			return nil, errors.Wrapf(xerr.NewErrCode(xerr.CACHE_ERROR), "failed to unmarshal json when get user's information")
-		}
+	if stringx.NotEmpty(value) {
 		//update the token's expire time (24 hours).
 		l.svcCtx.RedisClient.Expire(globalkey.TokenPrefix+in.GetToken(), int(globalkey.TokenExpireTime.Seconds()))
 		isAuthed = true
+		userId, err = GetUserIdFromTokenKey(value)
+		if err != nil {
+			return nil, errors.Wrapf(xerr.NewErrCode(xerr.SERVER_COMMON_ERROR), "take info error when explain info")
+		}
+	} else {
+		isAuthed = false
 	}
 
 	return &user.CheckAuthReply{
 		Authed:   isAuthed,
-		AuthedId: dyUser.UserId,
+		AuthedId: userId,
 	}, nil
+}
+
+// GetUserIdFromTokenKey 通过value获取 token
+func GetUserIdFromTokenKey(info string) (userId int64, err error) {
+	arr := strings.Split(info, ":")
+	userId, err = strconv.ParseInt(arr[0], 10, 64)
+	if err != nil {
+		return 0, err
+	}
+	return userId, err
 }

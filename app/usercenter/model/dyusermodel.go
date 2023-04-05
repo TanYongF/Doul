@@ -7,6 +7,7 @@ import (
 	"github.com/zeromicro/go-zero/core/stores/cache"
 	"github.com/zeromicro/go-zero/core/stores/sqlc"
 	"github.com/zeromicro/go-zero/core/stores/sqlx"
+	"go_code/Doul/common/globalkey"
 )
 
 var _ DyUserModel = (*customDyUserModel)(nil)
@@ -24,12 +25,30 @@ type (
 	DyUserModel interface {
 		dyUserModel
 		FindOneByUsername(ctx context.Context, username string) (*DyUser, error)
+		FindOneByUserId(ctx context.Context, userId int64) (*DyUser, error)
 	}
 
 	customDyUserModel struct {
 		*defaultDyUserModel
 	}
 )
+
+func (c customDyUserModel) FindOneByUserId(ctx context.Context, userId int64) (*DyUser, error) {
+	douyinDyUserUserIdKey := globalkey.GetUserById(userId)
+	var resp DyUser
+	err := c.QueryRowCtx(ctx, &resp, douyinDyUserUserIdKey, func(ctx context.Context, conn sqlx.SqlConn, v interface{}) error {
+		query := fmt.Sprintf("select %s from %s where `user_id` = ? limit 1", dyUserRows, c.table)
+		return conn.QueryRowCtx(ctx, v, query, userId)
+	})
+	switch err {
+	case nil:
+		return &resp, nil
+	case sqlc.ErrNotFound:
+		return nil, ErrNotFound
+	default:
+		return nil, err
+	}
+}
 
 // FindOneByUsername 通过用户名查找用户
 func (c customDyUserModel) FindOneByUsername(ctx context.Context, username string) (*DyUser, error) {

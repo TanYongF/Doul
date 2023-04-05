@@ -3,16 +3,14 @@ package main
 import (
 	"flag"
 	"fmt"
-	"go_code/Doul/common/interceptor"
-
-	"go_code/Doul/app/video/cmd/rpc/internal/config"
-	"go_code/Doul/app/video/cmd/rpc/internal/server"
-	"go_code/Doul/app/video/cmd/rpc/internal/svc"
-	"go_code/Doul/app/video/cmd/rpc/video"
-
 	"github.com/zeromicro/go-zero/core/conf"
 	"github.com/zeromicro/go-zero/core/service"
 	"github.com/zeromicro/go-zero/zrpc"
+	"go_code/Doul/app/video/cmd/rpc/internal/config"
+	"go_code/Doul/app/video/cmd/rpc/internal/server"
+	"go_code/Doul/app/video/cmd/rpc/internal/svc"
+	"go_code/Doul/app/video/cmd/rpc/pb"
+	"go_code/Doul/common/interceptor"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/reflection"
 )
@@ -27,7 +25,7 @@ func main() {
 	ctx := svc.NewServiceContext(c)
 
 	s := zrpc.MustNewServer(c.RpcServerConf, func(grpcServer *grpc.Server) {
-		video.RegisterVideoServer(grpcServer, server.NewVideoServer(ctx))
+		pb.RegisterVideoServer(grpcServer, server.NewVideoServer(ctx))
 
 		if c.Mode == service.DevMode || c.Mode == service.TestMode {
 			reflection.Register(grpcServer)

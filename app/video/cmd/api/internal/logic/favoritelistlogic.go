@@ -2,7 +2,9 @@ package logic
 
 import (
 	"context"
-	"go_code/Doul/app/video/cmd/rpc/videoclient"
+	"go_code/Doul/app/video/cmd/rpc/video"
+	"go_code/Doul/common/tool"
+
 	"strconv"
 
 	"go_code/Doul/app/video/cmd/api/internal/svc"
@@ -26,14 +28,11 @@ func NewFavoriteListLogic(ctx context.Context, svcCtx *svc.ServiceContext) *Favo
 }
 
 func (l *FavoriteListLogic) FavoriteList(req *types.FavoriteVideofListReq) (resp *types.FavoriteVideoListResp, err error) {
-	// todo: add your logic here and delete this line
 	queryId, _ := strconv.ParseInt(req.UserId, 10, 64)
-	favoriteList, err := l.svcCtx.VideoRpc.FavoriteList(l.ctx, &videoclient.FavoriteListReq{
+	favoriteList, err := l.svcCtx.VideoRpc.FavoriteList(l.ctx, &video.FavoriteListReq{
 		QueryId: queryId,
+		UserId:  tool.GetUidFromCtx(l.ctx),
 	})
-	if err != nil {
-		return nil, err
-	}
 	if err != nil {
 		return nil, err
 	}

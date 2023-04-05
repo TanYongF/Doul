@@ -3,11 +3,11 @@ package logic
 import (
 	"context"
 	"github.com/jinzhu/copier"
-	"go_code/Doul/app/video/cmd/rpc/videoclient"
-	"time"
-
 	"go_code/Doul/app/video/cmd/api/internal/svc"
 	"go_code/Doul/app/video/cmd/api/internal/types"
+	"go_code/Doul/app/video/cmd/rpc/video"
+	"go_code/Doul/common/tool"
+	"strconv"
 
 	"github.com/zeromicro/go-zero/core/logx"
 )
@@ -27,8 +27,9 @@ func NewFeedLogic(ctx context.Context, svcCtx *svc.ServiceContext) *FeedLogic {
 }
 
 func (l *FeedLogic) Feed(req *types.FeedReq) (resp *types.FeedResp, err error) {
-	feeds, err := l.svcCtx.VideoRpc.Feed(l.ctx, &videoclient.FeedReq{
+	feeds, err := l.svcCtx.VideoRpc.Feed(l.ctx, &video.FeedReq{
 		LatestTime: req.LastestTime,
+		UserId:     tool.GetUidFromCtx(l.ctx),
 	})
 	if err != nil {
 		return nil, err
@@ -40,7 +41,7 @@ func (l *FeedLogic) Feed(req *types.FeedReq) (resp *types.FeedResp, err error) {
 		copier.Copy(&videos[i].Author, &feeds.VideoList[i].Author)
 	}
 
-	var nextTime = int64(time.Now().Second())
+	nextTime, _ := strconv.ParseInt(feeds.NextTime, 10, 64)
 	return &types.FeedResp{
 		NextTime:  &nextTime,
 		VideoList: videos,

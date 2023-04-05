@@ -4,7 +4,7 @@
 // - protoc             v3.21.12
 // source: video-rpc.proto
 
-package video
+package pb
 
 import (
 	context "context"
@@ -25,6 +25,7 @@ type VideoClient interface {
 	Feed(ctx context.Context, in *FeedReq, opts ...grpc.CallOption) (*FeedResp, error)
 	PublishList(ctx context.Context, in *PublishListReq, opts ...grpc.CallOption) (*PublishListResp, error)
 	FavoriteList(ctx context.Context, in *FavoriteListReq, opts ...grpc.CallOption) (*FavoriteListResp, error)
+	Like(ctx context.Context, in *LikeReq, opts ...grpc.CallOption) (*LikeResp, error)
 }
 
 type videoClient struct {
@@ -37,7 +38,7 @@ func NewVideoClient(cc grpc.ClientConnInterface) VideoClient {
 
 func (c *videoClient) Feed(ctx context.Context, in *FeedReq, opts ...grpc.CallOption) (*FeedResp, error) {
 	out := new(FeedResp)
-	err := c.cc.Invoke(ctx, "/video.Video/feed", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/pb.Video/feed", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -46,7 +47,7 @@ func (c *videoClient) Feed(ctx context.Context, in *FeedReq, opts ...grpc.CallOp
 
 func (c *videoClient) PublishList(ctx context.Context, in *PublishListReq, opts ...grpc.CallOption) (*PublishListResp, error) {
 	out := new(PublishListResp)
-	err := c.cc.Invoke(ctx, "/video.Video/publishList", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/pb.Video/publishList", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -55,7 +56,16 @@ func (c *videoClient) PublishList(ctx context.Context, in *PublishListReq, opts 
 
 func (c *videoClient) FavoriteList(ctx context.Context, in *FavoriteListReq, opts ...grpc.CallOption) (*FavoriteListResp, error) {
 	out := new(FavoriteListResp)
-	err := c.cc.Invoke(ctx, "/video.Video/favoriteList", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/pb.Video/favoriteList", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *videoClient) Like(ctx context.Context, in *LikeReq, opts ...grpc.CallOption) (*LikeResp, error) {
+	out := new(LikeResp)
+	err := c.cc.Invoke(ctx, "/pb.Video/like", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -69,6 +79,7 @@ type VideoServer interface {
 	Feed(context.Context, *FeedReq) (*FeedResp, error)
 	PublishList(context.Context, *PublishListReq) (*PublishListResp, error)
 	FavoriteList(context.Context, *FavoriteListReq) (*FavoriteListResp, error)
+	Like(context.Context, *LikeReq) (*LikeResp, error)
 	mustEmbedUnimplementedVideoServer()
 }
 
@@ -84,6 +95,9 @@ func (UnimplementedVideoServer) PublishList(context.Context, *PublishListReq) (*
 }
 func (UnimplementedVideoServer) FavoriteList(context.Context, *FavoriteListReq) (*FavoriteListResp, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method FavoriteList not implemented")
+}
+func (UnimplementedVideoServer) Like(context.Context, *LikeReq) (*LikeResp, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method Like not implemented")
 }
 func (UnimplementedVideoServer) mustEmbedUnimplementedVideoServer() {}
 
@@ -108,7 +122,7 @@ func _Video_Feed_Handler(srv interface{}, ctx context.Context, dec func(interfac
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/video.Video/feed",
+		FullMethod: "/pb.Video/feed",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(VideoServer).Feed(ctx, req.(*FeedReq))
@@ -126,7 +140,7 @@ func _Video_PublishList_Handler(srv interface{}, ctx context.Context, dec func(i
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/video.Video/publishList",
+		FullMethod: "/pb.Video/publishList",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(VideoServer).PublishList(ctx, req.(*PublishListReq))
@@ -144,10 +158,28 @@ func _Video_FavoriteList_Handler(srv interface{}, ctx context.Context, dec func(
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/video.Video/favoriteList",
+		FullMethod: "/pb.Video/favoriteList",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(VideoServer).FavoriteList(ctx, req.(*FavoriteListReq))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _Video_Like_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(LikeReq)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(VideoServer).Like(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/pb.Video/like",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(VideoServer).Like(ctx, req.(*LikeReq))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -156,7 +188,7 @@ func _Video_FavoriteList_Handler(srv interface{}, ctx context.Context, dec func(
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
 var Video_ServiceDesc = grpc.ServiceDesc{
-	ServiceName: "video.Video",
+	ServiceName: "pb.Video",
 	HandlerType: (*VideoServer)(nil),
 	Methods: []grpc.MethodDesc{
 		{
@@ -170,6 +202,10 @@ var Video_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "favoriteList",
 			Handler:    _Video_FavoriteList_Handler,
+		},
+		{
+			MethodName: "like",
+			Handler:    _Video_Like_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

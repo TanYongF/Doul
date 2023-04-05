@@ -8,14 +8,16 @@ import (
 	"github.com/zeromicro/go-zero/core/stores/sqlx"
 )
 
-var _ DyVideoModel = (*customDyVideoModel)(nil)
+var (
+	_ DyVideoModel = (*customDyVideoModel)(nil)
+)
 
 type (
 	// DyVideoModel is an interface to be customized, add more methods here,
 	// and implement the added methods in customDyVideoModel.
 	DyVideoModel interface {
 		dyVideoModel
-		GetVideoList(ctx context.Context) ([]*DyVideoWithUser, error)
+		GetVideoList(ctx context.Context) ([]*DyVideo, error)
 		GetPublishListByUserId(ctx context.Context, userId int64) ([]*DyVideoWithUser, error)
 		GetFavoriteListByUserId(ctx context.Context, userId int64) ([]*DyVideoWithUser, error)
 	}
@@ -33,11 +35,10 @@ type (
 )
 
 // GetVideoList 搭配feed接口，获取视频集合
-func (c customDyVideoModel) GetVideoList(ctx context.Context) ([]*DyVideoWithUser, error) {
+func (c customDyVideoModel) GetVideoList(ctx context.Context) ([]*DyVideo, error) {
 	//TODO 搭配推荐算法
-	query := "select dv.* ,  du.name , du.follower_count , du.follow_count, du.is_follow  from dy_video dv join dy_user du using (user_id) order by create_date desc limit 30"
-
-	var resp []*DyVideoWithUser
+	query := fmt.Sprintf("select * from %s order by create_date desc limit 10", c.table)
+	var resp []*DyVideo
 	err := c.QueryRowsNoCacheCtx(ctx, &resp, query)
 
 	switch err {

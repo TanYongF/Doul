@@ -72,6 +72,16 @@ API接口是指服务端暴露给Web、客户端、Browser的接口，其是通�
 
 每个微服务都有自己的的API网关，一个API后面会调用多个RPC服务，所以后期一个RPC服务的修改就需要重构整个API服务，所以为每个微服务创建自己的网关，因此上层必须使用**统一网关**来做流量分发，此项目使用`Nginx`作为统一流量入口，具体作用就是流量通过Nginx服务器分发给各个微服务的网关上。具体参考[使用Nginx作为网关](https://github.com/Mikaelemmmm/go-zero-looklook/blob/main/doc/chinese/2-nginx%E7%BD%91%E5%85%B3.md)
 
+常用命令：
+```shell
+Usage: nginx [-?hvVtTq] [-s signal] [-p prefix]
+             [-e filename] [-c filename] [-g directives]
+ #-t : 检测当前配置文件是否正确
+ #-c : 指定配置文件路径 
+ #-s signal : send signal to a master process: stop, quit, reopen, reload
+nginx -s [reload/start] # 重载配置
+```
+
 本项目的Nginx配置如下：
 
 ```nginx
@@ -245,3 +255,20 @@ $ docker imagesREPOSITORY                                                       
 ```
 $ docker push registry-vpc.cn-heyuan.aliyuncs.com/acs/agent:0.7-dfb6816
 ```
+
+### MQ安装
+
+https://juejin.cn/post/6844903970545090574
+
+新版本的MQ需要手动打开WEB管理
+
+```shell
+docker exec -i -t <containerId> bin/bash #进入容器内部 记得替换containerId
+rabbitmq-plugins enable rabbitmq_management #打开web管理服务
+```
+
+MQ的Connection和Channel区别 [阿里云](https://help.aliyun.com/document_detail/178124.html)
+
+- 一个进程维护一条`Connection`
+- 一个进程的不同线程对应一条`Channel`
+

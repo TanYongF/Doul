@@ -35,6 +35,7 @@ type User {
 }
 
 type feedReq {
+	Token       string `form:"token,optional"`
 	LastestTime string `form:"latest_time"`
 }
 
@@ -70,7 +71,18 @@ type favoriteVideoListResp {
 	VideoList []Video `json:"video_list"` // 用户喜欢的视频列表
 }
 
-service video-api {
+type (
+	favoriteReq {
+		VideoId    int64 `form:"video_id"`
+		ActionType int8  `form:"action_type"`
+	}
+
+	favoriteResp {
+		CommonResp
+	}
+)
+
+service video-api{
 	@handler feed
 	get /douyin/feed (feedReq) returns (feedResp)
 }
@@ -79,6 +91,7 @@ service video-api {
 	middleware : AuthMiddleware
 )
 service video-api{
+	
 	@doc "publish video"
 	@handler publishAction
 	post /douyin/publish/action (publishActionReq) returns (publishActionResp)
@@ -90,5 +103,9 @@ service video-api{
 	@doc "get the favorite video list"
 	@handler favoriteList
 	get /douyin/favorite/list (favoriteVideofListReq) returns (favoriteVideoListResp)
+	
+	@doc "like the video list"
+	@handler favorite
+	post /douyin/favorite/action (favoriteReq) returns (favoriteResp)
 	
 }

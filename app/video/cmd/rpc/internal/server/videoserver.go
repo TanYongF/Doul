@@ -8,12 +8,12 @@ import (
 
 	"go_code/Doul/app/video/cmd/rpc/internal/logic"
 	"go_code/Doul/app/video/cmd/rpc/internal/svc"
-	"go_code/Doul/app/video/cmd/rpc/video"
+	"go_code/Doul/app/video/cmd/rpc/pb"
 )
 
 type VideoServer struct {
 	svcCtx *svc.ServiceContext
-	video.UnimplementedVideoServer
+	pb.UnimplementedVideoServer
 }
 
 func NewVideoServer(svcCtx *svc.ServiceContext) *VideoServer {
@@ -22,17 +22,22 @@ func NewVideoServer(svcCtx *svc.ServiceContext) *VideoServer {
 	}
 }
 
-func (s *VideoServer) Feed(ctx context.Context, in *video.FeedReq) (*video.FeedResp, error) {
+func (s *VideoServer) Feed(ctx context.Context, in *pb.FeedReq) (*pb.FeedResp, error) {
 	l := logic.NewFeedLogic(ctx, s.svcCtx)
 	return l.Feed(in)
 }
 
-func (s *VideoServer) PublishList(ctx context.Context, in *video.PublishListReq) (*video.PublishListResp, error) {
+func (s *VideoServer) PublishList(ctx context.Context, in *pb.PublishListReq) (*pb.PublishListResp, error) {
 	l := logic.NewPublishListLogic(ctx, s.svcCtx)
 	return l.PublishList(in)
 }
 
-func (s *VideoServer) FavoriteList(ctx context.Context, in *video.FavoriteListReq) (*video.FavoriteListResp, error) {
+func (s *VideoServer) FavoriteList(ctx context.Context, in *pb.FavoriteListReq) (*pb.FavoriteListResp, error) {
 	l := logic.NewFavoriteListLogic(ctx, s.svcCtx)
 	return l.FavoriteList(in)
+}
+
+func (s *VideoServer) Like(ctx context.Context, in *pb.LikeReq) (*pb.LikeResp, error) {
+	l := logic.NewLikeLogic(ctx, s.svcCtx)
+	return l.Like(in)
 }

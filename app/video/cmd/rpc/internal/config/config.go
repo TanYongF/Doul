@@ -4,6 +4,7 @@ import (
 	"github.com/zeromicro/go-zero/core/stores/cache"
 	"github.com/zeromicro/go-zero/core/stores/redis"
 	"github.com/zeromicro/go-zero/zrpc"
+	"go_code/Doul/common/rabbitmq"
 )
 
 type Config struct {
@@ -15,4 +16,5 @@ type Config struct {
 	CacheRedis     cache.CacheConf // redis缓存
 	Redis          redis.RedisConf
 	DataSourceName string
+	RabbitMQ       rabbitmq.RabbitSenderConf
 }

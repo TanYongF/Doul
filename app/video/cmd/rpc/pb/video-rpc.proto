@@ -1,8 +1,8 @@
 syntax = "proto3";
 
-package video;
+package pb;
 
-option go_package="./video";
+option go_package="./pb";
 
 message VideoPO {
   UserPO Author = 1; // 视频作者信息
@@ -26,6 +26,7 @@ message UserPO {
 
 message FeedReq{
   string Latest_time = 1;
+  int64  UserId = 2;
 }
 
 message FeedResp {
@@ -34,7 +35,8 @@ message FeedResp {
 }
 
 message publishListReq{
-   int64  QueryId = 1;
+  int64  QueryId = 1;
+  int64  UserId = 2;
 }
 
 message publishListResp{
@@ -43,13 +45,24 @@ message publishListResp{
 
 message favoriteListReq{
   int64 QueryId = 1;
+  int64  UserId = 2;
 }
 message favoriteListResp{
   repeated VideoPO VideoList = 1; // 视频列表
+}
+
+message LikeReq{
+  int64 userId = 1;
+  int64 videoId = 2;
+  bool type = 3; // true : 点赞  false:取消点赞
+}
+message LikeResp{
+
 }
 
 service Video {
   rpc feed(FeedReq) returns (FeedResp);
   rpc publishList(publishListReq) returns (publishListResp);
   rpc favoriteList(favoriteListReq) returns (favoriteListResp);
+  rpc like(LikeReq) returns (LikeResp);
 }
