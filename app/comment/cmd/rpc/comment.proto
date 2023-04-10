@@ -6,25 +6,20 @@ option go_package="./comment";
 
 
 message PutCommentResp{
+  int64 comment_id = 1;
+  string content = 2;
+  string create_at = 3;
 }
 
 message PutCommentReq{
   int64 video_id = 1;
   string comment_text = 2;
-  int64 comment_id = 3;
 }
 
 message CommentListReq{
   int64 video_id = 1;
 }
 
-message User{
-  int64 id = 1;
-  string name = 2;
-  int64  follow_count = 3;
-  int64  follower_count = 4;
-  int64  is_follow = 6;
-}
 message CommentBody{
   int64 video_id = 1;
   string content = 2;

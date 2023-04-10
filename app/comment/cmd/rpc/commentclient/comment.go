@@ -20,7 +20,6 @@ type (
 	DeleteCommentResp = comment.DeleteCommentResp
 	PutCommentReq     = comment.PutCommentReq
 	PutCommentResp    = comment.PutCommentResp
-	User              = comment.User
 
 	Comment interface {
 		GetCommentList(ctx context.Context, in *CommentListReq, opts ...grpc.CallOption) (*CommentListResp, error)

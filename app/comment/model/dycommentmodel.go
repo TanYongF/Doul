@@ -14,7 +14,7 @@ type (
 	// and implement the added methods in customDyCommentModel.
 	DyCommentModel interface {
 		dyCommentModel
-		FindAllByVideoId(videoId int64) ([]DyComment, error)
+		FindAllByVideoId(videoId int64) ([]*DyComment, error)
 		DeleteById(commentId int64) error
 	}
 
@@ -36,10 +36,10 @@ func (c customDyCommentModel) DeleteById(commentId int64) error {
 
 }
 
-func (c customDyCommentModel) FindAllByVideoId(videoId int64) ([]DyComment, error) {
+func (c customDyCommentModel) FindAllByVideoId(videoId int64) ([]*DyComment, error) {
 	query := fmt.Sprintf("select * from %s where video_id = ? and is_del = 0", c.tableName())
-	var comments []DyComment
-	err := c.QueryRowsNoCache(comments, query, videoId)
+	var comments []*DyComment
+	err := c.QueryRowsNoCache(&comments, query, videoId)
 	switch err {
 	case nil:
 		return comments, nil

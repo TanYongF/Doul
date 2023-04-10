@@ -30,6 +30,5 @@ func (l *DeleteCommentLogic) DeleteComment(in *comment.DeleteCommentReq) (*comme
 	if err != nil {
 		return nil, errors.Wrapf(xerr.NewErrCode(xerr.DB_ERROR), "DB error when delete comments %d", in.CommentId)
 	}
-
 	return &comment.DeleteCommentResp{}, nil
 }

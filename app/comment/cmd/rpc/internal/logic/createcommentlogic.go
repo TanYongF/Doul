@@ -3,6 +3,7 @@ package logic
 import (
 	"context"
 	"go_code/Doul/app/comment/model"
+	"go_code/Doul/common/tool"
 
 	"go_code/Doul/app/comment/cmd/rpc/comment"
 	"go_code/Doul/app/comment/cmd/rpc/internal/svc"
@@ -25,13 +26,21 @@ func NewCreateCommentLogic(ctx context.Context, svcCtx *svc.ServiceContext) *Cre
 }
 
 func (l *CreateCommentLogic) CreateComment(in *comment.PutCommentReq) (*comment.PutCommentResp, error) {
-	// todo 这里应该从ctx取得 user_id
-	l.svcCtx.DyCommentModel.Insert(l.ctx, &model.DyComment{
-		UserId:  0,
+	var commentToInsert = model.DyComment{
+		UserId:  tool.GetUidFromCtx(l.ctx),
 		Content: in.GetCommentText(),
 		IsDel:   0,
 		VideoId: in.GetVideoId(),
-	})
+	}
+	_, err := l.svcCtx.DyCommentModel.Insert(l.ctx, &commentToInsert)
+	if err != nil {
+		return nil, err
+	}
 
-	return &comment.PutCommentResp{}, nil
+	// Todo : 2023/4/11 To solve the time format
+	return &comment.PutCommentResp{
+		CommentId: commentToInsert.CommentId,
+		Content:   commentToInsert.Content,
+		CreateAt:  commentToInsert.CreatedAt.String(),
+	}, nil
 }

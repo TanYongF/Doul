@@ -19,6 +19,7 @@ type LikeLogic struct {
 	logx.Logger
 }
 
+// lua script, modify counter in redis
 const luaScript = `
 	local change = tonumber(ARGV[3])
 	local exist = redis.call('SISMEMBER', KEYS[1], ARGV[1]) 
@@ -44,7 +45,8 @@ func NewLikeLogic(ctx context.Context, svcCtx *svc.ServiceContext) *LikeLogic {
 
 func (l *LikeLogic) Like(in *video.LikeReq) (*video.LikeResp, error) {
 	var err error
-	//todo 如何解决重复点赞问题？
+	//TODO how to solve the repeat-vote problem? --Tan
+
 	// step1 : update the counter
 	exist, err := l.svcCtx.RedisClient.Hexists(globalkey.GetVideoLikesCounterRedisKey(in.VideoId),
 		globalkey.GetVideoLikesCounterFieldKey(in.VideoId))
@@ -70,36 +72,13 @@ func (l *LikeLogic) Like(in *video.LikeReq) (*video.LikeResp, error) {
 		strconv.Itoa(change),
 	})
 	if err != nil {
-		return nil, err
-	}
-	//// 判断点赞类型
-	//if in.Type {
-	//	err = l.svcCtx.RedisClient.PipelinedCtx(l.ctx, func(pipe redis.Pipeliner) error {
-	//		_, err = l.svcCtx.RedisClient.Hincrby(
-	//			globalkey.GetVideoLikesCounterRedisKey(in.VideoId),
-	//			globalkey.GetVideoLikesCounterFieldKey(in.VideoId),
-	//			1)
-	//		_, err = l.svcCtx.RedisClient.Sadd(globalkey.GetVideoLikesUsersRedisKey(in.VideoId), in.UserId)
-	//		return err
-	//	})
-	//
-	//} else {
-	//	err = l.svcCtx.RedisClient.PipelinedCtx(l.ctx, func(pipe redis.Pipeliner) error {
-	//		_, err = l.svcCtx.RedisClient.Hincrby(
-	//			globalkey.GetVideoLikesCounterRedisKey(in.VideoId),
-	//			globalkey.GetVideoLikesCounterFieldKey(in.VideoId),
-	//			-1)
-	//		_, err = l.svcCtx.RedisClient.Srem(globalkey.GetVideoLikesUsersRedisKey(in.VideoId), in.UserId)
-	//		return err
-	//	})
-	//}
-	if err != nil {
 		return nil, errors.Wrapf(xerr.NewErrCode(xerr.CACHE_ERROR), "update the %d video counter error", in.VideoId)
 	}
 
-	// step2 : send message to mq
+	// step2 : send mqMessage to rabbit mq
 	// action : 1: like 2: dislike
-	message, err := json.Marshal(rabbitmq.LikesRelationUpdateStockMessage{
+	//true send action
+	mqMessage, err := json.Marshal(rabbitmq.LikesRelationUpdateStockMessage{
 		UserId:  in.UserId,
 		VideoId: in.VideoId,
 		Type:    in.Type,
@@ -108,10 +87,9 @@ func (l *LikeLogic) Like(in *video.LikeReq) (*video.LikeResp, error) {
 		return nil, errors.Wrapf(xerr.NewErrMsg("Error"), "marshal error")
 	}
 
-	//异步入库操作
-	err = l.svcCtx.MqSender.Send("likes", "", message)
+	err = l.svcCtx.MqSender.Send("likes", "", mqMessage)
 	if err != nil {
-		return nil, errors.Wrapf(xerr.NewErrCode(xerr.MQ_ERROR), "public message error")
+		return nil, errors.Wrapf(xerr.NewErrCode(xerr.MQ_ERROR), "public mqMessage error")
 	}
 
 	return &video.LikeResp{}, nil

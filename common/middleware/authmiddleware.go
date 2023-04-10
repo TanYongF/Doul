@@ -22,10 +22,11 @@ func NewAuthMiddleware(userClient userclient.User) *AuthMiddleware {
 
 // Handle
 //
-//	@Description: 鉴权中间件方法
-//	@receiver m 鉴权中间件
-//	@param next
-//	@return http.HandlerFunc
+//		@Description: 鉴权中间件方法
+//		@receiver m 鉴权中间件
+//		@param next
+//		@return http.HandlerFunc
+//	 when need get user_id, can use the  method : tool.GetUidFromCtx(l.ctx),
 func (m *AuthMiddleware) Handle(next http.HandlerFunc) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		//Get token from query or form-data
@@ -55,9 +56,6 @@ func (m *AuthMiddleware) Handle(next http.HandlerFunc) http.HandlerFunc {
 			return
 		}
 
-		//md := metadata.New(map[string]string{"username": "zhangsan"})
-		//ctx := metadata.NewOutgoingContext(r.Context(), md)
-		//next(w, r.WithContext(ctx))
 		next(w, r.WithContext(context.WithValue(r.Context(), "auth_id", auth.AuthedId)))
 	}
 }
