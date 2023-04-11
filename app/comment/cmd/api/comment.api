@@ -40,7 +40,7 @@ type CommentActionResp {
 }
 
 type CommentListReq {
-	Token   string `json:"comment,omitempty"`
+	Token   string `form:"token,omitempty"`
 	VideoId int64  `form:"video_id"`
 }
 
@@ -49,8 +49,8 @@ type CommentActionReq {
 	Token       string `form:"token"`
 	VideoId     int64  `form:"video_id"`
 	ActionType  int8   `form:"action_type"`
-	CommentText string `form:"comment_text"`
-	CommentId   int64  `form:"comment_id"`
+	CommentText string `form:"comment_text,optional"`
+	CommentId   int64  `form:"comment_id,optional"`
 }
 
 @server (

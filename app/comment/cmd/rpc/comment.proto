@@ -14,6 +14,7 @@ message PutCommentResp{
 message PutCommentReq{
   int64 video_id = 1;
   string comment_text = 2;
+  int64  user_id = 3;
 }
 
 message CommentListReq{

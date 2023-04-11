@@ -26,6 +26,7 @@ func NewCommentListLogic(ctx context.Context, svcCtx *svc.ServiceContext) *Comme
 	}
 }
 
+// CommentList TODO: improve the performance
 func (l *CommentListLogic) CommentList(req *types.CommentListReq) (resp *types.CommentListResp, err error) {
 	rpcResult, err := l.svcCtx.CommentRpc.GetCommentList(l.ctx, &comment.CommentListReq{VideoId: req.VideoId})
 	if err != nil {

@@ -35,13 +35,14 @@ func (l *CommentActionLogic) CommentAction(req *types.CommentActionReq) (resp *t
 		rpcResp, err := l.svcCtx.CommentRpc.CreateComment(l.ctx, &comment.PutCommentReq{
 			VideoId:     req.VideoId,
 			CommentText: req.CommentText,
+			UserId:      tool.GetUidFromCtx(l.ctx),
 		})
 		if err != nil {
 			return nil, err
 		}
 
 		videoUser, err := l.svcCtx.UserRpc.GetUser(l.ctx, &user.UserInfoReq{
-			QueryId: 0,
+			QueryId: tool.GetUidFromCtx(l.ctx),
 			UserId:  tool.GetUidFromCtx(l.ctx),
 		})
 		if err != nil {

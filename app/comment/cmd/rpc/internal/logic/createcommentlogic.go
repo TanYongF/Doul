@@ -2,11 +2,9 @@ package logic
 
 import (
 	"context"
-	"go_code/Doul/app/comment/model"
-	"go_code/Doul/common/tool"
-
 	"go_code/Doul/app/comment/cmd/rpc/comment"
 	"go_code/Doul/app/comment/cmd/rpc/internal/svc"
+	"go_code/Doul/app/comment/model"
 
 	"github.com/zeromicro/go-zero/core/logx"
 )
@@ -27,17 +25,16 @@ func NewCreateCommentLogic(ctx context.Context, svcCtx *svc.ServiceContext) *Cre
 
 func (l *CreateCommentLogic) CreateComment(in *comment.PutCommentReq) (*comment.PutCommentResp, error) {
 	var commentToInsert = model.DyComment{
-		UserId:  tool.GetUidFromCtx(l.ctx),
+		UserId:  in.UserId,
 		Content: in.GetCommentText(),
 		IsDel:   0,
 		VideoId: in.GetVideoId(),
 	}
-	_, err := l.svcCtx.DyCommentModel.Insert(l.ctx, &commentToInsert)
-	if err != nil {
+	if _, err := l.svcCtx.DyCommentModel.Insert(l.ctx, &commentToInsert); err != nil {
 		return nil, err
 	}
 
-	// Todo : 2023/4/11 To solve the time format
+	// TODO : 2023/4/11 To solve the time format
 	return &comment.PutCommentResp{
 		CommentId: commentToInsert.CommentId,
 		Content:   commentToInsert.Content,

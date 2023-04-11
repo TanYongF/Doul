@@ -26,7 +26,7 @@ func NewGetCommentListLogic(ctx context.Context, svcCtx *svc.ServiceContext) *Ge
 }
 
 func (l *GetCommentListLogic) GetCommentList(in *comment.CommentListReq) (*comment.CommentListResp, error) {
-	comments, err := l.svcCtx.DyCommentModel.FindAllByVideoId(in.VideoId)
+	comments, err := l.svcCtx.DyCommentModel.FindByVideoId(in.VideoId, 3, 1)
 	if err != nil {
 		return nil, errors.Wrapf(xerr.NewErrCode(xerr.DB_ERROR), "DB error when get comments")
 	}

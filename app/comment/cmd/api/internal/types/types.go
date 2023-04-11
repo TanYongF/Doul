@@ -22,8 +22,8 @@ type User struct {
 }
 
 type CommentListResp struct {
-	CommentList []Comment `json:"comment_list"` // 评论列表
 	CommonResp
+	CommentList []Comment `json:"comment_list"` // 评论列表
 }
 
 type CommentActionResp struct {
@@ -32,7 +32,7 @@ type CommentActionResp struct {
 }
 
 type CommentListReq struct {
-	Token   string `form:"token"`
+	Token   string `form:"token,omitempty"`
 	VideoId int64  `form:"video_id"`
 }
 
@@ -40,6 +40,6 @@ type CommentActionReq struct {
 	Token       string `form:"token"`
 	VideoId     int64  `form:"video_id"`
 	ActionType  int8   `form:"action_type"`
-	CommentText string `form:"comment_text"`
-	CommentId   int64  `form:"comment_id"`
+	CommentText string `form:"comment_text,optional"`
+	CommentId   int64  `form:"comment_id,optional"`
 }
