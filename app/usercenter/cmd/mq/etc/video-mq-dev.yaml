@@ -1,0 +1,36 @@
+Name: usercenter-mq
+Host: 0.0.0.0
+Port: 3001
+
+
+Mysql:
+  DataSource: doul:123456@tcp(127.0.0.1:3306)/douyin?charset=utf8mb4&parseTime=true&loc=Asia%2FShanghai
+
+
+DataSourceName: doul:123456@tcp(127.0.0.1:3306)/douyin?charset=utf8mb4&parseTime=true&loc=Asia%2FShanghai
+
+
+Log:
+  ServiceName: video-mq
+  Mode: console
+  Level: info
+  Encoding: plain
+
+
+Redis:
+  Host: 127.0.0.1:6379
+  Pass: password
+
+CacheRedis:
+  - Host: 127.0.0.1:6379
+    Pass: password
+    Type: node
+
+RabbitMQConfig:
+  Username: root
+  Password: pass
+  Host:     127.0.0.1
+  Port:     5672
+  ListenerQueues:
+    -
+      Name: q2

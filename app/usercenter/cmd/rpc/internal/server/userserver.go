@@ -66,3 +66,8 @@ func (s *UserServer) GetFollowingList(ctx context.Context, in *user.GetFollowing
 	l := logic.NewGetFollowingListLogic(ctx, s.svcCtx)
 	return l.GetFollowingList(in)
 }
+
+func (s *UserServer) FollowAction(ctx context.Context, in *user.FollowActionReq) (*user.FollowActionResp, error) {
+	l := logic.NewFollowActionLogic(ctx, s.svcCtx)
+	return l.FollowAction(in)
+}

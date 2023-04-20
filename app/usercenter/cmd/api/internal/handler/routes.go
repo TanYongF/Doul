@@ -44,6 +44,11 @@ func RegisterHandlers(server *rest.Server, serverCtx *svc.ServiceContext) {
 					Path:    "/douyin/relation/follow/list",
 					Handler: followingListHandler(serverCtx),
 				},
+				{
+					Method:  http.MethodPost,
+					Path:    "/douyin/relation/action",
+					Handler: followHandler(serverCtx),
+				},
 			}...,
 		),
 	)

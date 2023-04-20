@@ -17,6 +17,8 @@ type (
 	CheckAuthReq          = user.CheckAuthReq
 	CheckIsFollowReq      = user.CheckIsFollowReq
 	CheckIsFollowResp     = user.CheckIsFollowResp
+	FollowActionReq       = user.FollowActionReq
+	FollowActionResp      = user.FollowActionResp
 	GetFollowerCountReq   = user.GetFollowerCountReq
 	GetFollowerCountResp  = user.GetFollowerCountResp
 	GetFollowerListReq    = user.GetFollowerListReq
@@ -43,6 +45,7 @@ type (
 		GetFollowerCount(ctx context.Context, in *GetFollowerCountReq, opts ...grpc.CallOption) (*GetFollowerCountResp, error)
 		GetFollowerList(ctx context.Context, in *GetFollowerListReq, opts ...grpc.CallOption) (*GetFollowerListResp, error)
 		GetFollowingList(ctx context.Context, in *GetFollowingListReq, opts ...grpc.CallOption) (*GetFollowingListResp, error)
+		FollowAction(ctx context.Context, in *FollowActionReq, opts ...grpc.CallOption) (*FollowActionResp, error)
 	}
 
 	defaultUser struct {
@@ -99,4 +102,9 @@ func (m *defaultUser) GetFollowerList(ctx context.Context, in *GetFollowerListRe
 func (m *defaultUser) GetFollowingList(ctx context.Context, in *GetFollowingListReq, opts ...grpc.CallOption) (*GetFollowingListResp, error) {
 	client := user.NewUserClient(m.cli.Conn())
 	return client.GetFollowingList(ctx, in, opts...)
+}
+
+func (m *defaultUser) FollowAction(ctx context.Context, in *FollowActionReq, opts ...grpc.CallOption) (*FollowActionResp, error) {
+	client := user.NewUserClient(m.cli.Conn())
+	return client.FollowAction(ctx, in, opts...)
 }

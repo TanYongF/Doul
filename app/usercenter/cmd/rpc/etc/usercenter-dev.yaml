@@ -1,0 +1,26 @@
+Name: user.rpc
+ListenOn: 0.0.0.0:7080
+Etcd:
+  Hosts:
+  - 127.0.0.1:2379
+  Key: user.rpc
+
+Mysql:
+  DataSource: doul:123456@tcp(127.0.0.1:3306)/douyin?charset=utf8mb4&parseTime=true&loc=Asia%2FShanghai
+Log:
+  ServiceName: user-rpc
+  Mode: file
+  Level: info
+  Encoding: json
+  Path: file
+
+Timeout: 0
+
+Redis:
+  Host: 127.0.0.1:6379
+  Pass: 1234565
+
+CacheRedis:
+  - Host: 127.0.0.1:6379
+    Pass: t123456
+    Type: node

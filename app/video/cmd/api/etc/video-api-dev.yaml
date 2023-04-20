@@ -1,0 +1,27 @@
+Name: video-api
+Host: 0.0.0.0
+Port: 8890
+Mode: dev
+
+
+UserRpcConf:
+  Etcd:
+    Hosts:
+      - 127.0.0.1:2379
+    Key: user.rpc
+  Timeout: 5000
+
+Timeout: 100000
+
+VideoRpcConf:
+  Etcd:
+    Hosts:
+      - 127.0.0.1:2379
+    Key: video.rpc
+  Timeout: 5000
+
+Log:
+  ServiceName: video-api
+  Mode: console
+  Level: info
+  Encoding: plain

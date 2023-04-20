@@ -64,3 +64,13 @@ type UserLoginRes struct {
 	UserId int64  `json:"user_id,omitempty"`
 	Token  string `json:"token"`
 }
+
+type FollowActionReq struct {
+	Token    string `form:"token"`
+	Type     string `form:"action_type"`
+	ToUserId string `form:"to_user_id"`
+}
+
+type FollowActionResp struct {
+	CommonResp
+}

@@ -92,6 +92,14 @@ message GetFollowingListReq{
 message GetFollowingListResp{
   repeated UserPO users = 1;
 }
+message FollowActionReq{
+  int64  user_id = 1;
+  int64  to_user_id = 2;
+  int32  type = 3;
+}
+message FollowActionResp{
+  bool isSuccess = 1;
+}
 
 service User {
   rpc getUser(UserInfoReq) returns(UserInfoReply);
@@ -103,4 +111,5 @@ service User {
   rpc getFollowerCount(GetFollowerCountReq) returns (GetFollowerCountResp);
   rpc getFollowerList(GetFollowerListReq) returns (GetFollowerListResp);
   rpc getFollowingList(GetFollowingListReq) returns (GetFollowingListResp);
+  rpc followAction(FollowActionReq) returns (FollowActionResp);
 }

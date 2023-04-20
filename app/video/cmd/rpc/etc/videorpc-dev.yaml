@@ -1,0 +1,47 @@
+Name: video.rpc
+ListenOn: 0.0.0.0:7081
+Model: dev
+Etcd:
+  Hosts:
+  - 81.68.239.206:2379
+  Key: video.rpc
+
+Timeout: 0
+
+Mysql:
+  DataSource: doul:123456@tcp(127.0.0.1:3306)/douyin?charset=utf8mb4&parseTime=true&loc=Asia%2FShanghai
+
+
+DataSourceName: doul:123456@tcp(127.0.0.1:3306)/douyin?charset=utf8mb4&parseTime=true&loc=Asia%2FShanghai
+
+Log:
+  ServiceName: video-rpc
+  Mode: console
+  Level: info
+  Encoding: plain
+
+Redis:
+  Host: 127.0.0.1:6379
+  Type: node
+  Pass: 1234565
+
+RabbitMQ:
+  Host: 127.0.0.1
+  Port: 5672
+  Username: root
+  Password: 123456
+  ContentType: application/json
+
+
+CacheRedis:
+  - Host: 127.0.0.1:6379
+    Pass: 123456
+    Type: node
+
+UserRpcConf:
+  Etcd:
+    Hosts:
+      - 127.0.0.1:2379
+    Key: user.rpc
+  Timeout: 5000
+

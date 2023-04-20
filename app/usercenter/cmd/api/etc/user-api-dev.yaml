@@ -1,0 +1,23 @@
+Name: user-api
+Host: 0.0.0.0
+Port: 8889
+Mode: dev
+UserRpc:
+#  Endpoints:
+#    - localhost:7080
+  Etcd:
+    Hosts:
+      - 127.0.0.1:2379
+    Key: user.rpc
+    Timeout: 100000
+
+
+Timeout: 100000
+
+Log:
+  ServiceName: user-rpc
+  Mode: console
+  Level: info
+  Encoding: plain
+
+

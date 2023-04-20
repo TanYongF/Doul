@@ -70,3 +70,16 @@ type (
         Token  string `json:"token"`
     }
 )
+
+
+
+type(
+    FollowActionReq{
+        Token  string `form:"token"`
+        Type   string `form:"action_type"`
+        ToUserId string `form:"to_user_id"`
+    }
+    FollowActionResp{
+        CommonResp
+    }
+)

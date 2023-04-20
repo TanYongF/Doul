@@ -1,0 +1,28 @@
+Name: comment
+Host: 0.0.0.0
+Port: 8888
+
+UserRpc:
+  Etcd:
+    Hosts:
+      - 127.0.0.1:2379
+    Key: user.rpc
+
+
+CommentRpc:
+  Etcd:
+    Hosts:
+      - 127.0.0.1:2379
+    Key: comment.rpc
+
+
+Timeout: 100000
+
+Log:
+  ServiceName: comment-rpc
+  Mode: console
+  Level: info
+  Encoding: plain
+
+
+

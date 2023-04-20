@@ -24,6 +24,7 @@ service user-api {
 	middleware : AuthMiddleware
 )
 service  user-api{
+	@doc "获取用户信息"
 	@handler userinfo
 	get /douyin/user (InfoReq) returns (InfoRes)
 	
@@ -34,4 +35,8 @@ service  user-api{
 	@doc "获取关注列表"
 	@handler followingList
 	get /douyin/relation/follow/list (FollowingListReq) returns (FollowingListResp)
+	
+	@doc "关注操作"
+	@handler follow
+	post /douyin/relation/action (FollowActionReq) returns (FollowActionResp)
 }

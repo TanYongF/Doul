@@ -272,3 +272,83 @@ MQ的Connection和Channel区别 [阿里云](https://help.aliyun.com/document_det
 - 一个进程维护一条`Connection`
 - 一个进程的不同线程对应一条`Channel`
 
+### Kibana 和 ElasticSearch 安装
+此部分记录一下Docker方式下，Kibana和ES工具的安装。
+> Kibana version : 8.7.0
+> 
+> ElasticSearch version : 8.7.0
+
+
+**一些文档**
+- [官方文档](https://www.elastic.co/guide/en/elasticsearch/reference/current/docker.html)
+- [安全配置](https://blog.csdn.net/The_Time_Runner/article/details/111409319)
+
+
+
+
+0. 创建网络
+
+```bash
+docker network create es-net
+````
+
+1. 安装ElasticSearch
+```dockerfile
+docker run -d \
+	--name elasticsearch \
+    -e "ES_JAVA_OPTS=-Xms512m -Xmx512m" \
+    -e "discovery.type=single-node" \
+    -v es-data:/usr/share/elasticsearch/data \
+    -v es-plugins:/usr/share/elasticsearch/plugins \
+    --privileged \
+    --network es-net \
+    -p 9200:9200 \
+    -p 9300:9300 \
+elasticsearch:8.7.0
+```
+
+
+2. 安装Kibana
+
+```dockerfile
+docker run -d \
+--name kibana \
+-e ELASTICSEARCH_HOSTS=http://elasticsearch:9200 \
+--network es-net \
+-p 5601:5601  \
+kibana:8.7.0
+```
+
+3. 更改es密码
+
+```bash
+docker exec -it [es容器ID] bash #进入容器
+elasticsearch-setup-passwords interactive #交互式的修改几个账号密码
+exit #修改完成退出 
+```
+访问 http://127.0.0.1:9200 测试结果
+
+4. 修改kibana配置
+
+```bash
+docker exec -it [kibana容器ID] bash #进入容器
+vim /usr/share/kibana/config/kibana.yml #修改配置, 配置如下
+exit #修改完成后退出
+```
+
+```editorconfig
+server.name: kibana
+server.host: "0"
+elasticsearch.hosts: [ "http://ip:9200" ] # elasticsearch的ip，有时候localhost不行
+monitoring.ui.container.elasticsearch.enabled: true
+elasticsearch.username: "kibana_system" # 刚才提到的Kibana用的built-in user
+elasticsearch.password: "111111" # 第二步里自己设置的密码
+
+```
+
+修改完成退出，重启，访问 http://127.0.0.1:5601 , 
+账号： elastic
+密码： 第3步设置的密码
+
+
+

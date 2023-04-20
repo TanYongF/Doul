@@ -29,7 +29,7 @@ type (
 		CountFollowingsByUserId(ctx context.Context, userId int64) (*int64, error)
 		GetFollowerList(ctx context.Context, userId int64) ([]DyUser, error)
 		GetFollowingList(ctx context.Context, userId int64) ([]DyUser, error)
-		UpInsert(ctx context.Context, m *DyRelation) interface{}
+		UpInsert(ctx context.Context, m *DyRelation) error
 	}
 
 	customDyRelationModel struct {
@@ -38,7 +38,7 @@ type (
 	}
 )
 
-func (c customDyRelationModel) UpInsert(ctx context.Context, data *DyRelation) interface{} {
+func (c customDyRelationModel) UpInsert(ctx context.Context, data *DyRelation) error {
 	query := fmt.Sprintf("insert into %s (%s) values (?, ?, ?) on duplicate key update `is_del` = ?", c.table, dyRelationRowsExpectAutoSet)
 	_, err := c.ExecNoCacheCtx(ctx, query, data.FollowerId, data.FollowingId, data.IsDel, data.IsDel)
 	if err != nil {
