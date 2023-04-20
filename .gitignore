@@ -18,6 +18,9 @@
 
 common/test
 
+
+file/*
+
 !/file/*
 !/file/access.log
 
