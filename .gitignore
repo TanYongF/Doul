@@ -19,3 +19,7 @@
 common/test
 
 *.log
+
+
+*.yaml
+!*-dev.yaml
