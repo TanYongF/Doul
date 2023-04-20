@@ -17,3 +17,5 @@
 # vendor/
 
 common/test
+
+!/file/
