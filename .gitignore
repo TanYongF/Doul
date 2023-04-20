@@ -18,4 +18,4 @@
 
 common/test
 
-!/file/
+!/file/*
