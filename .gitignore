@@ -18,16 +18,4 @@
 
 common/test
 
-
-file/*
-
-!/file/*
-!/file/access.log
-
-!/file/error.log
-
-!/file/severe.log
-
-!/file/slow.log
-
-!/file/stat.log
+*.log
