@@ -29,6 +29,8 @@ func NewFeedLogic(ctx context.Context, svcCtx *svc.ServiceContext) *FeedLogic {
 
 func (l *FeedLogic) Feed(in *video.FeedReq) (*video.FeedResp, error) {
 	// todo: 还有限制返回时间戳未完成
+
+	// todo 评论内容待更新
 	videos, err := l.svcCtx.DyVideoModel.GetVideoList(l.ctx)
 	if err != nil {
 		return nil, errors.Wrapf(err, "DB error when get video list")

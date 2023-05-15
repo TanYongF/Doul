@@ -25,7 +25,6 @@ func NewFollowActionLogic(ctx context.Context, svcCtx *svc.ServiceContext) *Foll
 }
 
 func (l *FollowActionLogic) FollowAction(in *user.FollowActionReq) (*user.FollowActionResp, error) {
-	// todo: add your logic here and delete this line
 	var isDel int
 	if in.Type == 1 {
 		isDel = 0

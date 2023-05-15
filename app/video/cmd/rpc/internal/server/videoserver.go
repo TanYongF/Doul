@@ -41,3 +41,8 @@ func (s *VideoServer) Like(ctx context.Context, in *pb.LikeReq) (*pb.LikeResp, e
 	l := logic.NewLikeLogic(ctx, s.svcCtx)
 	return l.Like(in)
 }
+
+func (s *VideoServer) PublishAction(ctx context.Context, in *pb.PublishReq) (*pb.PublishResp, error) {
+	l := logic.NewPublishActionLogic(ctx, s.svcCtx)
+	return l.PublishAction(in)
+}

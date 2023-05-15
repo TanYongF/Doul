@@ -19,6 +19,7 @@ func init() {
 	Message[WRONG_PASSWORD] = "登陆用户密码错误！请检查后重试！"
 	Message[NO_AUTH] = "用户未验证，请验证后再试"
 	Message[USERNAME_HAS_REGISTER] = "该用户名已被注册！"
+	Message[SECURITY_BANNED] = "请检查内容是否正规！"
 }
 
 func MapErrMsg(errcode uint32) string {

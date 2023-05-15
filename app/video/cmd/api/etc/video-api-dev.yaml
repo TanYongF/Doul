@@ -22,6 +22,16 @@ VideoRpcConf:
 
 Log:
   ServiceName: video-api
-  Mode: console
+  Mode: file
   Level: info
   Encoding: plain
+
+
+#OSS配置
+OSSConf:
+  endpoint: https://oss-accelerate.aliyuncs.com
+  accessKeyId: 111111
+  accessKeySecret: 111111
+  bucketName: 11111
+  targetPath: 11111
+  targetUrl: https://kauizhaotan.oss-accelerate.aliyuncs.com #配置回传视频地址前缀

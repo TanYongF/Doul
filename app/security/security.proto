@@ -1,0 +1,14 @@
+syntax = "proto3";
+option go_package="./security";
+
+package security;
+
+message CheckLegaContentReq{
+  string content = 1;
+}
+message CheckLegalContentResp{
+  bool legal = 1;
+}
+service Security {
+  rpc check(CheckLegaContentReq) returns (CheckLegalContentResp);
+}

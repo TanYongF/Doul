@@ -60,9 +60,20 @@ message LikeResp{
 
 }
 
+message publishReq{
+  string title = 1; // video's title
+  string coverUrl = 2; // video's cover address
+  string videoUrl = 3; // video's content address
+  int64 userId = 4;
+}
+message publishResp{
+
+}
+
 service Video {
   rpc feed(FeedReq) returns (FeedResp);
   rpc publishList(publishListReq) returns (publishListResp);
   rpc favoriteList(favoriteListReq) returns (favoriteListResp);
   rpc like(LikeReq) returns (LikeResp);
+  rpc publishAction(publishReq) returns (publishResp);
 }

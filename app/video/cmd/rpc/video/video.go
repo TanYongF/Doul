@@ -21,6 +21,8 @@ type (
 	LikeResp         = pb.LikeResp
 	PublishListReq   = pb.PublishListReq
 	PublishListResp  = pb.PublishListResp
+	PublishReq       = pb.PublishReq
+	PublishResp      = pb.PublishResp
 	UserPO           = pb.UserPO
 	VideoPO          = pb.VideoPO
 
@@ -29,6 +31,7 @@ type (
 		PublishList(ctx context.Context, in *PublishListReq, opts ...grpc.CallOption) (*PublishListResp, error)
 		FavoriteList(ctx context.Context, in *FavoriteListReq, opts ...grpc.CallOption) (*FavoriteListResp, error)
 		Like(ctx context.Context, in *LikeReq, opts ...grpc.CallOption) (*LikeResp, error)
+		PublishAction(ctx context.Context, in *PublishReq, opts ...grpc.CallOption) (*PublishResp, error)
 	}
 
 	defaultVideo struct {
@@ -60,4 +63,9 @@ func (m *defaultVideo) FavoriteList(ctx context.Context, in *FavoriteListReq, op
 func (m *defaultVideo) Like(ctx context.Context, in *LikeReq, opts ...grpc.CallOption) (*LikeResp, error) {
 	client := pb.NewVideoClient(m.cli.Conn())
 	return client.Like(ctx, in, opts...)
+}
+
+func (m *defaultVideo) PublishAction(ctx context.Context, in *PublishReq, opts ...grpc.CallOption) (*PublishResp, error) {
+	client := pb.NewVideoClient(m.cli.Conn())
+	return client.PublishAction(ctx, in, opts...)
 }

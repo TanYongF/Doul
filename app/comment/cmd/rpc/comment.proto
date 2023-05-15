@@ -25,6 +25,7 @@ message CommentBody{
   int64 video_id = 1;
   string content = 2;
   int64 user_id = 3;
+  //mm-dd 格式
   string create_at = 4;
 }
 message CommentListResp{

@@ -27,7 +27,6 @@ func NewFollowLogic(ctx context.Context, svcCtx *svc.ServiceContext) *FollowLogi
 }
 
 func (l *FollowLogic) Follow(req *types.FollowActionReq) (resp *types.FollowActionResp, err error) {
-	// todo: add your logic here and delete this line
 	userId := tool.GetUidFromCtx(l.ctx)
 	isDel, err := strconv.Atoi(req.Type)
 	if err != nil {

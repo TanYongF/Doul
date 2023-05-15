@@ -36,7 +36,7 @@ func (l *GetCommentListLogic) GetCommentList(in *comment.CommentListReq) (*comme
 			VideoId:  c.VideoId,
 			Content:  c.Content,
 			UserId:   c.UserId,
-			CreateAt: c.CreatedAt.String(),
+			CreateAt: c.CreatedAt.Format("01-02"),
 		}
 		resp = append(resp, &commentBody)
 	}

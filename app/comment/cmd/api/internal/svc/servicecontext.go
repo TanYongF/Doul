@@ -6,6 +6,8 @@ import (
 	"go_code/Doul/app/comment/cmd/api/internal/config"
 	"go_code/Doul/app/comment/cmd/rpc/comment"
 	"go_code/Doul/app/comment/cmd/rpc/commentclient"
+	"go_code/Doul/app/security/security"
+	"go_code/Doul/app/security/securityclient"
 	"go_code/Doul/app/usercenter/cmd/rpc/user"
 	"go_code/Doul/app/usercenter/cmd/rpc/userclient"
 	"go_code/Doul/common/middleware"
@@ -15,6 +17,7 @@ type ServiceContext struct {
 	Config         config.Config
 	UserRpc        user.UserClient
 	CommentRpc     comment.CommentClient
+	SecurityRpc    security.SecurityClient
 	AuthMiddleware rest.Middleware
 }
 
@@ -24,6 +27,7 @@ func NewServiceContext(c config.Config) *ServiceContext {
 		Config:         c,
 		UserRpc:        userClient,
 		CommentRpc:     commentclient.NewComment(zrpc.MustNewClient(c.CommentRpc)),
+		SecurityRpc:    securityclient.NewSecurity(zrpc.MustNewClient(c.SecurityRpc)),
 		AuthMiddleware: middleware.NewAuthMiddleware(userClient).Handle,
 	}
 }

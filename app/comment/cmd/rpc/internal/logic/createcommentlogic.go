@@ -34,10 +34,9 @@ func (l *CreateCommentLogic) CreateComment(in *comment.PutCommentReq) (*comment.
 		return nil, err
 	}
 
-	// TODO : 2023/4/11 To solve the time format
 	return &comment.PutCommentResp{
 		CommentId: commentToInsert.CommentId,
 		Content:   commentToInsert.Content,
-		CreateAt:  commentToInsert.CreatedAt.String(),
+		CreateAt:  commentToInsert.CreatedAt.Format("01-02"),
 	}, nil
 }

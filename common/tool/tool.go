@@ -7,12 +7,16 @@ import (
 )
 
 var (
-	Secrete = "douyinxiangmu" //salt for MD5 encryption
+	defaultSecrete = "douyinxiangmu" //salt for MD5 encryption
 )
 
 func Md5(pwd string) string {
-	str := fmt.Sprintf("%c%c%c%s%c%c%c", Secrete[9], Secrete[0], Secrete[4],
-		pwd, Secrete[3], Secrete[12], Secrete[6]) //combine salt and password.
+	return Md5WithSalt(pwd, defaultSecrete)
+}
+
+func Md5WithSalt(pwd string, salt string) string {
+	str := fmt.Sprintf("%c%c%c%s%c%c%c", salt[9], salt[0], salt[4],
+		pwd, salt[3], salt[12], salt[6]) //combine salt and password.
 	data := []byte(str)               //convert string to byte slice.
 	hash := md5.Sum(data)             //MD5 encryption
 	md5str := fmt.Sprintf("%x", hash) //convert []byte to hexadecimal.

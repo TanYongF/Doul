@@ -38,6 +38,7 @@ type FeedResp struct {
 
 type PublishActionReq struct {
 	Title string `json:"title"`
+	Token string `json:"token"`
 }
 
 type PublishActionResp struct {
