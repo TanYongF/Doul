@@ -54,7 +54,7 @@ func (l *LikesUpdateStatus) execService(message rabbitmq.LikesRelationUpdateStoc
 		VideoId: message.VideoId,
 		IsDel:   byte(isDel),
 	})
-
+	logx.Info(message)
 	if err != nil {
 		return errors.Wrapf(xerr.NewErrCode(xerr.DB_ERROR), "insert like relation db fail err : %v ,message:%+v", err, message)
 	}

@@ -7,6 +7,7 @@ import (
 	"github.com/zeromicro/go-zero/core/stringx"
 	"go_code/Doul/app/video/cmd/rpc/pb"
 	"go_code/Doul/common/tool"
+	"go_code/Doul/common/xerr"
 	"mime/multipart"
 	"net/http"
 
@@ -16,7 +17,7 @@ import (
 )
 
 const (
-	defaultMultipartMemory = 32 << 20 // 32 MB
+	defaultMultipartMemory = 32 << 10 // 32 MB
 )
 
 type PublishActionLogic struct {
@@ -34,12 +35,17 @@ func NewPublishActionLogic(ctx context.Context, svcCtx *svc.ServiceContext) *Pub
 }
 
 func (l *PublishActionLogic) PublishAction(r *http.Request) (resp *types.PublishActionResp, err error) {
-	// step1 : parse the multipart form
+	// step1 : parse the multipart form and check the video format
 	if err := r.ParseMultipartForm(defaultMultipartMemory); err != nil {
 		return nil, err
 	}
 	title := r.MultipartForm.Value["title"][0]
 	_, handler, err := r.FormFile("data")
+
+	if isValid, err := l.CheckValid(handler); !isValid || err != nil {
+		return nil, err
+	}
+
 	if err != nil || stringx.HasEmpty(title) {
 		if stringx.HasEmpty(title) {
 			return nil, errors.New("empty title")
@@ -70,6 +76,19 @@ func (l *PublishActionLogic) PublishAction(r *http.Request) (resp *types.Publish
 	}
 	logx.Infof("user %d upload the new video %s", tool.GetUidFromCtx(l.ctx), title)
 	return &types.PublishActionResp{}, nil
+}
+
+// CheckValid 检查视频格式是否正确
+func (l *PublishActionLogic) CheckValid(handler *multipart.FileHeader) (isValid bool, err error) {
+	//最多16M视频
+	if handler.Size > 16*1024*1024 {
+		return false, xerr.NewErrMsg("视频文件大小超出限制！")
+	}
+	var fileName = handler.Filename
+	if fileName[len(fileName)-4:] != ".mp4" {
+		return false, xerr.NewErrMsg("上传文件格式不正确！")
+	}
+	return true, nil
 }
 
 // SaveVideoToOSS  save the video to the oss

@@ -162,19 +162,25 @@ docker network create app-tier --driver bridge #构建Docker网络
 
 #运行etcd服务端
 docker run -d --name etcd-server \
+    -p 2379:2379  -p 2380:2380 \
+    --env ALLOW_NONE_AUTHENTICATION=yes \
+    bitnami/etcd:latest
+    -advertise-client-urls http://0.0.0.0:2379 \
+    -listen-client-urls http://0.0.0.0:2379 \
+
+    docker run -d --name etcd-server \
     --network app-tier \
     --publish 2379:2379 \
     --publish 2380:2380 \
     --env ALLOW_NONE_AUTHENTICATION=yes \
-    --env ETCD_ADVERTISE_CLIENT_URLS=http://etcd-server:2379 \
+    --env ETCD_ADVERTISE_CLIENT_URLS=http://81.68.239.206:2379 \
     bitnami/etcd:latest
-    
  
 ##客户端--可选
 docker run -it --rm \
-    --network app-tier \
     --env ALLOW_NONE_AUTHENTICATION=yes \
-    bitnami/etcd:latest etcdctl --endpoints http://etcd-server:2379 put /message Hello
+
+    bitnami/etcd:latest etcdctl --endpoints http://localhost:2379 put /message Hello
     
     
     
@@ -185,6 +191,16 @@ docker run -it --rm \
     
 
 ```
+几个重要参数：
+>--advertise-client-urls
+就是客户端(etcdctl/curl等)跟etcd服务进行交互时请求的url
+--listen-client-urls
+这个参数是etcd服务器自己监听时用的，也就是说，监听本机上的哪个网卡，哪个端口
+
+作者：码二哥
+链接：https://www.jianshu.com/p/7bbef1ca9733
+来源：简书
+著作权归作者所有。商业转载请联系作者获得授权，非商业转载请注明出处。
 
 ### 4. sqlx踩坑
 

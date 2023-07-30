@@ -9,6 +9,7 @@ import (
 	"net/http"
 )
 
+// todo: hello  response
 // HttpResult Union Http Response Func
 func HttpResult(r *http.Request, w http.ResponseWriter, resp interface{}, err error) {
 	if err == nil {

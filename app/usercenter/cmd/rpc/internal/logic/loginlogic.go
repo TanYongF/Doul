@@ -21,7 +21,6 @@ type LoginLogic struct {
 	logx.Logger
 }
 
-var ErrGenerateTokenError = xerr.NewErrMsg("生成token失败")
 var ErrUsernamePwdError = xerr.NewErrMsg("账号或密码不正确")
 var ErrUserNoExistsError = xerr.NewErrMsg("无此用户")
 
@@ -44,7 +43,7 @@ func (l *LoginLogic) Login(in *user.LoginReq) (*user.LoginReply, error) {
 
 	//将token加入redis中，过期时间是24小时, 键是token, 值是用户对象
 	val := strconv.FormatInt(dyuser.UserId, 10) + ":" + dyuser.Name
-	err = l.svcCtx.RedisClient.SetexCtx(l.ctx, globalkey.GetUserByToken(token), val, int(globalkey.TokenExpireTime.Seconds()))
+	err = l.svcCtx.RedisClient.SetexCtx(l.ctx, globalkey.GetTokenKeyByToken(token), val, int(globalkey.TokenExpireTime.Seconds()))
 	if err != nil {
 		return nil, errors.Wrapf(xerr.NewErrCode(xerr.CACHE_ERROR), "cache wrong when insert token")
 	}

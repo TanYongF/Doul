@@ -6,8 +6,6 @@ import (
 )
 
 var (
-	TokenPrefix     = "cache:douyin:dyUser:token:"
-	UserPrefix      = "user:"
 	TokenExpireTime = time.Hour * 24
 )
 
@@ -29,7 +27,7 @@ func GetVideoLikesUsersRedisKey(videoId int64) string {
 	return "doul:video:" + strconv.FormatInt(videoId, 10) + ":recently"
 }
 
-func GetUserByToken(token string) string {
+func GetTokenKeyByToken(token string) string {
 	return "doul:token:" + token
 }
 

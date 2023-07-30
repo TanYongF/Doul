@@ -10,7 +10,6 @@ import (
 func publishActionHandler(svcCtx *svc.ServiceContext) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		l := logic.NewPublishActionLogic(r.Context(), svcCtx)
-
 		resp, err := l.PublishAction(r)
 		response.HttpResult(r, w, resp, err)
 	}

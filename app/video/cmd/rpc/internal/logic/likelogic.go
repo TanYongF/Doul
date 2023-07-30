@@ -87,9 +87,8 @@ func (l *LikeLogic) Like(in *video.LikeReq) (*video.LikeResp, error) {
 		return nil, errors.Wrapf(xerr.NewErrMsg("Error"), "marshal error")
 	}
 
-	err = l.svcCtx.MqSender.Send("likes", "", mqMessage)
-	if err != nil {
-		return nil, errors.Wrapf(xerr.NewErrCode(xerr.MQ_ERROR), "public mqMessage error")
+	if err := l.svcCtx.MqSender.Send("likes", "video", mqMessage); err != nil {
+		return nil, errors.Wrapf(xerr.NewErrCode(xerr.MQ_ERROR), "error occurs when publish message to mq")
 	}
 
 	return &video.LikeResp{}, nil

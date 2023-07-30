@@ -32,7 +32,7 @@ func NewCheckAuthLogic(ctx context.Context, svcCtx *svc.ServiceContext) *CheckAu
 
 // CheckAuth check the user has authed
 func (l *CheckAuthLogic) CheckAuth(in *user.CheckAuthReq) (*user.CheckAuthReply, error) {
-	value, err := l.svcCtx.RedisClient.Get(globalkey.GetUserByToken(in.Token))
+	value, err := l.svcCtx.RedisClient.Get(globalkey.GetTokenKeyByToken(in.Token))
 	isAuthed := false
 	var userId int64
 
@@ -41,7 +41,10 @@ func (l *CheckAuthLogic) CheckAuth(in *user.CheckAuthReq) (*user.CheckAuthReply,
 	}
 	if stringx.NotEmpty(value) {
 		//update the token's expire time (24 hours).
-		l.svcCtx.RedisClient.Expire(globalkey.TokenPrefix+in.GetToken(), int(globalkey.TokenExpireTime.Seconds()))
+		err := l.svcCtx.RedisClient.Expire(globalkey.GetTokenKeyByToken(in.Token), int(globalkey.TokenExpireTime.Seconds()))
+		if err != nil {
+			return nil, errors.Wrapf(xerr.NewErrCode(xerr.CACHE_ERROR), "Error while updating token validity")
+		}
 		isAuthed = true
 		userId, err = GetUserIdFromTokenKey(value)
 		if err != nil {
